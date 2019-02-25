@@ -35,16 +35,12 @@ dhcpcd --noarp wls1
 # ip addr flush dev wls1
 # ip route flush dev wls1
 
-# 确保系统时间是准确的, 一定确保同步, 否则会造成签名错误.
-timedatectl set-ntp true && ntpdate pool.ntp.org
 # 查看分区, 创建分区, 使用 cfdisk, 界面比较友好.
 fdisk -l
 # 格式化分区
 #  mkfs.ext4 /dev/sda1
 # 加载已经分好的区
 mount /dev/sda1 /mnt
-# 设定上海交大源为首选源, 速度更快
-sed -i '1iServer = http://ftp.sjtu.edu.cn/archlinux/$repo/os/$arch' /etc/pacman.d/mirrorlist
 
 # 拷贝文件到 mount 的分区, 如果没加参数, 默认只安装 base
 pacstrap /mnt base base-devel cmake
@@ -64,15 +60,6 @@ pacstrap /mnt xorg xorg-xinit xterm
 # 如果是笔记本, 触摸板的 synclient 命令需要这个包.
 pacstrap /mnt xf86-input-keyboard xf86-input-mouse xf86-inputpacstrap /mnt gnome
 
-# 添加交大的 AUR 源
-cat <<'HEREDOC' >> /mnt/etc/pacman.conf
-[archlinuxcn]
-SigLevel = Optional TrustAll
-Server = https://mirrors.sjtug.sjtu.edu.cn/archlinux-cn/$arch
-HEREDOC
-
-# 生成当前分区的 fstab 信息
-genfstab -U /mnt >> /mnt/etc/fstab
 genfstab -U /home >> /mnt/etc/fstab  # 要先 mount /home
 # 切换到目标 root
 arch-chroot /mnt /bin/bash
