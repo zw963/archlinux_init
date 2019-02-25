@@ -37,10 +37,6 @@ dhcpcd --noarp wls1
 
 # 查看分区, 创建分区, 使用 cfdisk, 界面比较友好.
 fdisk -l
-# 格式化分区
-#  mkfs.ext4 /dev/sda1
-# 加载已经分好的区
-mount /dev/sda1 /mnt
 
 # 拷贝文件到 mount 的分区, 如果没加参数, 默认只安装 base
 pacstrap /mnt base base-devel cmake
@@ -60,11 +56,7 @@ pacstrap /mnt xorg xorg-xinit xterm
 # 如果是笔记本, 触摸板的 synclient 命令需要这个包.
 pacstrap /mnt xf86-input-keyboard xf86-input-mouse xf86-inputpacstrap /mnt gnome
 
-genfstab -U /home >> /mnt/etc/fstab  # 要先 mount /home
-# 切换到目标 root
-arch-chroot /mnt /bin/bash
-# 设定上海为当前时区, 并保存时间到主机, hwclock 会生成: /etc/adjtime
-ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && hwclock --systohc --utc
+# genfstab -U /home >> /mnt/etc/fstab  # 要先 mount /home
 
 # 设定 wpa_supplicant 配置文件, 下面的配置文件也允许 wpa_cli 工作.
 cat <<'HEREDOC' > /etc/wpa_supplicant/wpa_supplicant.conf
@@ -85,30 +77,6 @@ ln -s /usr/share/dhcpcd/hooks/10-wpa_supplicant /usr/lib/dhcpcd/dhcpcd-hooks/
 
 # 然后运行 wpa_supplicant -B -i interface -c /etc/wpa_supplicant/wpa_supplicant.conf 启动 wifi
 
-
-function add_config () {
-    pattern="$1"
-    cat '$2' |grep "^${pattern}" || echo "$pattern" >> "$2"
-}
-
-# 开启需要的 locale
-add_config 'en_US.UTF-8 UTF-8' /etc/locale.gen
-add_config 'zh_CN.UTF-8 UTF-8' /etc/locale.gen
-add_config 'zh_TW.UTF-8 UTF-8' /etc/locale.gen
-# 生成 locale 信息.
-locale-gen
-
-
-# 设定 LANG 环境变量 (FIXME: 这个不执行， 看看效果)
-echo 'LANG=en_US.UTF-8' > /etc/locale.conf
-echo 'LANG=en_US.UTF-8' > /etc/locale.conf
-
-# 设定 hostname
-echo 'arch_linux' > /etc/hostname
-# 编辑 /etc/hosts
-echo '127.0.0.1 localhost' >> /etc/hosts
-echo '::1 localhost' >> /etc/hosts
-echo '127.0.0.1 arch_linux' >> /etc/hosts
 # 修改 root 密码
 passwd
 # 添加新用户 zw963
