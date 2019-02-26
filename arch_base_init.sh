@@ -38,19 +38,6 @@ dhcpcd --noarp wls1
 # 查看分区, 创建分区, 使用 cfdisk, 界面比较友好.
 fdisk -l
 
-# 拷贝文件到 mount 的分区, 如果没加参数, 默认只安装 base
-pacstrap /mnt base base-devel cmake
-
-pacstrap /mnt linux-lts linux-lts-headers
-
-# 网络相关工具
-pacstrap /mnt net-tools ntp openssh
-
-# 无线网络相关联的包
-pacstrap /mnt iw wpa_supplicant dialog wireless_tools
-# network manager.
-pacstrap /mnt networkmanager network-manager-applet
-
 pacstrap /mnt xorg xorg-xinit xterm
 
 # 如果是笔记本, 触摸板的 synclient 命令需要这个包.
@@ -77,30 +64,13 @@ ln -s /usr/share/dhcpcd/hooks/10-wpa_supplicant /usr/lib/dhcpcd/dhcpcd-hooks/
 
 # 然后运行 wpa_supplicant -B -i interface -c /etc/wpa_supplicant/wpa_supplicant.conf 启动 wifi
 
-# 修改 root 密码
-passwd
-# 添加新用户 zw963
-useradd -m zw963
-passwd zw963
-echo 'zw963 ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
-
 systemctl disable dhcpcd
 systemctl enable wicd
 wicd_policy_group=$(cat /etc/dbus-1/system.d/wicd.conf |grep 'policy group'|cut -d'"' -f2)
 gpasswd -a zw963 $wicd_policy_group
 
-# 安装和配置 grub, 注意, 在更改了内核版本后, 也需要运行 grub-mkconfig
-# 注意：grub2-mkconfig -o /boot/grub/grub.cfg 则是升级内核后，使用 grub 启动通用的办法。
-# 注意目录名，例如：centos 是 /boot/grub2/grub.cfg
 pacman -Sy grub && grub-install /dev/sda && grub-mkconfig -o /boot/grub/grub.cfg
 # 安装 yaourt 包管理, FIXME: bash-completion 没有安装
-pacman -Sy yaourt bash-completion
-
-# 安装 patched 版本的 wicd, 这个版本修复了 wicd-curses 总是崩溃的问题。
-yaourt -S wicd-patched
-
-# 创建一些必须的空目录, (安装 vmware 客户端工具必须)
-for x in {0..6}; do mkdir -p /etc/init.d/rc${x}.d; done
 
 # # 替换 Linux 内核为 RTS 内核:
 
