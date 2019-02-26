@@ -33,7 +33,7 @@ Server = https://mirrors.sjtug.sjtu.edu.cn/archlinux-cn/$arch
 HEREDOC
 
 # 升级时, 忽略内核
-sed -i 's/#IgnorePkg.*=/IgnorePkg = linux linux-headers linux-lts linux-lts-headers' /mnt/etc/pacman.conf
+sed -i 's/#IgnorePkg.*=/IgnorePkg = linux linux-headers linux-lts linux-lts-headers/' /mnt/etc/pacman.conf
 
 # 生成 root 分区的 fstab 信息
 genfstab -U /mnt >> /mnt/etc/fstab
