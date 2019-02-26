@@ -32,6 +32,9 @@ SigLevel = Optional TrustAll
 Server = https://mirrors.sjtug.sjtu.edu.cn/archlinux-cn/$arch
 HEREDOC
 
+# 升级时, 忽略内核
+sed -i 's/#IgnorePkg.*=/IgnorePkg = linux linux-headers linux-lts linux-lts-headers' /mnt/etc/pacman.conf
+
 # 生成 root 分区的 fstab 信息
 genfstab -U /mnt >> /mnt/etc/fstab
 
@@ -80,6 +83,17 @@ echo 'zw963 ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 # 安装 patched 版本的 wicd, 这个版本修复了 wicd-curses 总是崩溃的问题。
 # 这个必须以新用户身份运行, 暂时注释
 sudo -u zw963 yaourt -S --noconfirm wicd-patched
+
+pacman -Sy --noconfirm xorg xorg-xinit xterm xf86-input-keyboard xf86-input-mouse xf86-input-synaptics
+# 安装中文字体, 和英文字体.
+pacman -Sy --noconfirm wqy-microhei wqy-zenhei ttf-dejavu
+pacman -Sy --noconfirm gnome
+
+# 使用 GDM 作为登陆器.
+systemctl enable bluetooth
+systemctl enable gdm.service
+
+pacstrap /mnt gnome
 
 # 创建一些必须的空目录, (安装 vmware 客户端工具必须)
 for x in {0..6}; do mkdir -p /etc/init.d/rc${x}.d; done

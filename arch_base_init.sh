@@ -38,11 +38,6 @@ dhcpcd --noarp wls1
 # 查看分区, 创建分区, 使用 cfdisk, 界面比较友好.
 fdisk -l
 
-pacstrap /mnt xorg xorg-xinit xterm
-
-# 如果是笔记本, 触摸板的 synclient 命令需要这个包.
-pacstrap /mnt xf86-input-keyboard xf86-input-mouse xf86-input-synaptics gnome
-
 # genfstab -U /home >> /mnt/etc/fstab  # 要先 mount /home
 
 # 设定 wpa_supplicant 配置文件, 下面的配置文件也允许 wpa_cli 工作.

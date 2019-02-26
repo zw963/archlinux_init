@@ -2,16 +2,8 @@
 
 # 安装显卡驱动, 不同的平台使用不同的包
 
-# 默认蓝牙服务是没有开启的, 启动蓝牙服务.
-systemctl enable bluetooth
-systemctl start bluetooth
-
-# 使用 GDM 作为登陆器.
-systemctl enable gdm.service
 # 使用 cinnamon 作为桌面.
 pacman -S cinnamon nemo-fileroller
-# 安装中文字体, 和英文字体.
-pacman -S wqy-microhei wqy-zenhei ttf-dejavu
 # 一个基本的图形编辑器
 pcman -S leafpad
 # Konsole
