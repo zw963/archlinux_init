@@ -16,7 +16,8 @@
 pacman -S xf86-video-intel
 
 # 如果希望安装 Nvidia 闭源驱动, 并且支持 32 位程序.
-pacman -S nvidia-lts nvidia-settings
+pacman -S nvidia nvidia-settings
+# 32 程序支持
 pacman -S lib32-virtualgl lib32-nvidia-utils
 
 pacman -S bumblebee mesa-demos
