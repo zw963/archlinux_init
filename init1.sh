@@ -10,7 +10,7 @@ timedatectl set-ntp true && ntpdate pool.ntp.org
 # 设定上海交大源为首选源, 速度更快
 sed -i '1iServer = http://ftp.sjtu.edu.cn/archlinux/$repo/os/$arch' /etc/pacman.d/mirrorlist
 
-# 拷贝文件到 mount 的分区, 如果不加任何参数, 默认只安装 base
+# 使用 pacstrap 拷贝文件到 mount 的分区, 不加任何参数, 默认只安装 base.
 # 安装 base, 但是替换 linux 为 linux-lts
 pacman -Sy
 pacman -Sg base | cut -d ' ' -f 2 | sed 's#^linux$#linux-lts#g' | pacstrap /mnt -
@@ -22,12 +22,6 @@ pacstrap /mnt iw wpa_supplicant dialog wireless_tools
 
 # 网络相关工具
 pacstrap /mnt net-tools ntp openssh traceroute bind-tools rsync
-
-# 编辑器
-pacstrap /mnt emacs
-
-# 其他工具
-pacstrap /mnt git tree mlocate ntfs-3g
 
 # 添加交大的 AUR 源
 cat <<'HEREDOC' >> /mnt/etc/pacman.conf
@@ -108,6 +102,11 @@ pacman -S --noconfirm konsole okular
 pacman -S --noconfirm firefox
 pacman -S --noconfirm flashplugin
 
+# 编辑器
+pacman -S --noconfirm emacs
+# 其他工具
+pacman -S --noconfirm git tree mlocate ntfs-3g
+
 # 类似于 mac 下的 alfred
 pacman -S --noconfirm albert
 
@@ -138,12 +137,13 @@ sudo -u zw963 yaourt -S --noconfirm wicd-patched
 # 创建一些必须的空目录, (安装 vmware 客户端工具必须)
 for x in {0..6}; do mkdir -p /etc/init.d/rc${x}.d; done
 
-echo 'Remember to set password to root and zw963 before reboot'
+echo 'Run before boot:'
 
+echo 'arch-chroot /mnt /bin/bash'
 echo 'passwd'
 echo 'passwd zw963'
 
-echo 'Run alsamixer to enable sound card.'
+echo 'Run after boot:'
 
 echo 'alsamixer'
 echo 'aplay /usr/share/sounds/alsa/Front_Center.wav'
