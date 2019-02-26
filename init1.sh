@@ -78,12 +78,6 @@ grub-mkconfig -o /boot/grub/grub.cfg
 
 pacman -Sy --noconfirm yaourt bash-completion
 
-useradd -m zw963
-echo 'zw963 ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
-# 安装 patched 版本的 wicd, 这个版本修复了 wicd-curses 总是崩溃的问题。
-# 这个必须以新用户身份运行, 暂时注释
-sudo -u zw963 yaourt -S --noconfirm wicd-patched
-
 pacman -Sy --noconfirm xorg xorg-xinit xterm xf86-input-keyboard xf86-input-mouse xf86-input-synaptics
 # 安装中文字体, 和英文字体.
 pacman -Sy --noconfirm wqy-microhei wqy-zenhei ttf-dejavu
@@ -93,7 +87,11 @@ pacman -Sy --noconfirm gnome
 systemctl enable bluetooth
 systemctl enable gdm.service
 
-pacstrap /mnt gnome
+useradd -m zw963
+echo 'zw963 ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+# 安装 patched 版本的 wicd, 这个版本修复了 wicd-curses 总是崩溃的问题。
+# 这个必须以新用户身份运行, 暂时注释
+sudo -u zw963 yaourt -S --noconfirm wicd-patched
 
 # 创建一些必须的空目录, (安装 vmware 客户端工具必须)
 for x in {0..6}; do mkdir -p /etc/init.d/rc${x}.d; done
