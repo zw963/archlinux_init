@@ -73,15 +73,14 @@ grub-mkconfig -o /boot/grub/grub.cfg
 
 pacman -Sy --noconfirm yaourt bash-completion
 
+useradd -m zw963
+echo 'zw963 ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 # 安装 patched 版本的 wicd, 这个版本修复了 wicd-curses 总是崩溃的问题。
 # 这个必须以新用户身份运行, 暂时注释
-sudo -u zw963 yaourt -S wicd-patched
+sudo -u zw963 yaourt -S --noconfirm wicd-patched
 
 # 创建一些必须的空目录, (安装 vmware 客户端工具必须)
 for x in {0..6}; do mkdir -p /etc/init.d/rc${x}.d; done
-
-useradd -m zw963
-echo 'zw963 ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 
 echo 'Remember to set password to root and zw963 after reboot'
 echo 'passwd'
