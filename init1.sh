@@ -40,7 +40,7 @@ ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && hwclock --systohc --u
 
 function add_config () {
     pattern="$1"
-    cat '$2' |grep "^${pattern}" || echo "$pattern" >> "$2"
+    cat "$2" |grep "^${pattern}" || echo "$pattern" >> "$2"
 }
 
 # 开启需要的 locale
