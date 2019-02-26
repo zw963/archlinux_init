@@ -68,11 +68,15 @@ echo 'zw963 ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 # 安装和配置 grub, 注意, 在更改了内核版本后, 也需要运行 grub-mkconfig
 # 注意：grub2-mkconfig -o /boot/grub/grub.cfg 则是升级内核后，使用 grub 启动通用的办法。
 # 注意目录名，例如：centos 是 /boot/grub2/grub.cfg
-pacman -Sy grub && grub-install /dev/sda && grub-mkconfig -o /boot/grub/grub.cfg
-pacman -Sy yaourt bash-completion
+pacman -Sy --noconfirm grub
+grub-install /dev/sda
+grub-mkconfig -o /boot/grub/grub.cfg
+
+pacman -Sy --noconfirm yaourt bash-completion
 
 # 安装 patched 版本的 wicd, 这个版本修复了 wicd-curses 总是崩溃的问题。
-yaourt -S wicd-patched
+# 这个必须以新用户身份运行, 暂时注释
+# yaourt -S wicd-patched
 
 # 创建一些必须的空目录, (安装 vmware 客户端工具必须)
 for x in {0..6}; do mkdir -p /etc/init.d/rc${x}.d; done
