@@ -1,11 +1,17 @@
 
 # 如果是 vmware, 下面的包安装显卡驱动
-# pacman -S xf86-video-vmware
+
+# 安装显卡驱动, 不同的平台使用不同的包
 
 # ATI 显卡
 # pacman -S xf86-video-ati
+
 # Nvidia
 # pacman -S xf86-video-nouveau
+
+# vmware
+# pacman -S xf86-video-vmware
+
 # Intel
 pacman -S xf86-video-intel
 
@@ -14,8 +20,6 @@ pacman -S nvidia-lts lib32-nvidia-utils nvidia-settings
 pacman -S bumblebee lib32-virtualgl mesa-demos
 gpasswd -a zw963 bumblebee
 systemctl enable bumblebeed
-
-pacman -S gst-libav # H.264 解码
 
 # 1. 取消 /etc/gdm/custom.conf 当中 WaylandEnable=false 的注释.
 # 2. 修改 /etc/bumblebee/xorg.conf.nvidia

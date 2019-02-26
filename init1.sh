@@ -19,11 +19,15 @@ pacstrap /mnt base-devel cmake
 
 # 无线网络相关联的包
 pacstrap /mnt iw wpa_supplicant dialog wireless_tools
-# network manager.
-pacstrap /mnt networkmanager network-manager-applet
 
 # 网络相关工具
-pacstrap /mnt net-tools ntp openssh
+pacstrap /mnt net-tools ntp openssh traceroute bind-tools rsync
+
+# 编辑器
+pacstrap /mnt emacs
+
+# 其他工具
+pacstrap /mnt git tree mlocate ntfs-3g
 
 # 添加交大的 AUR 源
 cat <<'HEREDOC' >> /mnt/etc/pacman.conf
@@ -40,6 +44,9 @@ genfstab -U /mnt >> /mnt/etc/fstab
 
 # 切换到目标 root
 arch-chroot /mnt /bin/bash
+
+useradd -m zw963
+echo 'zw963 ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 
 # 设定上海为当前时区, 并保存时间到主机, hwclock 会生成: /etc/adjtime
 ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && hwclock --systohc --utc
@@ -68,27 +75,62 @@ echo '127.0.0.1 localhost' >> /etc/hosts
 echo '::1 localhost' >> /etc/hosts
 echo '127.0.0.1 arch_linux' >> /etc/hosts
 
+pacman -Sy
+
 # 安装和配置 grub, 注意, 在更改了内核版本后, 也需要运行 grub-mkconfig
 # 注意：grub2-mkconfig -o /boot/grub/grub.cfg 则是升级内核后，使用 grub 启动通用的办法。
 # 注意目录名，例如：centos 是 /boot/grub2/grub.cfg
-
-pacman -Sy --noconfirm grub
+pacman -S --noconfirm grub
 grub-install /dev/sda
 grub-mkconfig -o /boot/grub/grub.cfg
 
-pacman -Sy --noconfirm yaourt bash-completion
+pacman -S --noconfirm cron
+systemctl enable cronie
 
-pacman -Sy --noconfirm xorg xorg-xinit xterm xf86-input-keyboard xf86-input-mouse xf86-input-synaptics
+pacman -S --noconfirm nfs-utils
+systemctl enable nfs-server
+systemctl enable rpcbind
+
+pacman -S --noconfirm xorg xorg-xinit xterm xf86-input-keyboard xf86-input-mouse xf86-input-synaptics
 # 安装中文字体, 和英文字体.
-pacman -Sy --noconfirm wqy-microhei wqy-zenhei ttf-dejavu
-pacman -Sy --noconfirm gnome
-
+pacman -S --noconfirm wqy-microhei wqy-zenhei ttf-dejavu
+pacman -S --noconfirm gnome
 # 使用 GDM 作为登陆器.
+systemctl enable gdm
 systemctl enable bluetooth
-systemctl enable gdm.service
 
-useradd -m zw963
-echo 'zw963 ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+# network manager.
+pacman -S --noconfirm networkmanager network-manager-applet
+systemctl enable NetworkManager
+
+pacman -S --noconfirm konsole okular
+
+pacman -S --noconfirm firefox
+pacman -S --noconfirm flashplugin
+
+# 类似于 mac 下的 alfred
+pacman -S --noconfirm albert
+
+pacman -S --noconfirm gparted
+
+pacman -S --noconfirm fcitx-im fcitx-sunpinyin fcitx-configtool
+
+# wine 以及浏览器支持, .NET 支持
+pacman -S --noconfirm wine wine_gecko wine-mono
+
+# pamac-aur 的图形界面.
+pacman -S --noconfirm yaourt pamac-aur bash-completion
+
+# intel 集成显卡驱动
+pacman -S --noconfirm xf86-video-intel
+# 声卡驱动
+pacman -S --noconfirm alsa-utils pavucontrol
+# 将当前用户加入 audio 分组.
+gpasswd -a zw963 audio
+
+# 安装多媒体相关的解码库及 H.264 解码支持
+sudo -u zw963 yaourt -S --noconfirm vlc gst-libav
+
 # 安装 patched 版本的 wicd, 这个版本修复了 wicd-curses 总是崩溃的问题。
 # 这个必须以新用户身份运行, 暂时注释
 sudo -u zw963 yaourt -S --noconfirm wicd-patched
@@ -96,6 +138,13 @@ sudo -u zw963 yaourt -S --noconfirm wicd-patched
 # 创建一些必须的空目录, (安装 vmware 客户端工具必须)
 for x in {0..6}; do mkdir -p /etc/init.d/rc${x}.d; done
 
-echo 'Remember to set password to root and zw963 after reboot'
+echo 'Remember to set password to root and zw963 before reboot'
+
 echo 'passwd'
 echo 'passwd zw963'
+
+echo 'Run alsamixer to enable sound card.'
+
+echo 'alsamixer'
+echo 'aplay /usr/share/sounds/alsa/Front_Center.wav'
+echo '/usr/sbin/alsactl store'

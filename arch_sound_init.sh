@@ -10,6 +10,3 @@ alsamixer
 aplay /usr/share/sounds/alsa/Front_Center.wav
 #  保存声音设置
 /usr/sbin/alsactl store
-
-# 将当前用户加入 audio 分组.
-gpasswd -a zw963 audio

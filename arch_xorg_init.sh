@@ -1,16 +1,9 @@
 # 第一步,首先启动 wifi
 
-# 安装显卡驱动, 不同的平台使用不同的包
-
 # 使用 cinnamon 作为桌面.
 pacman -S cinnamon nemo-fileroller
 # 一个基本的图形编辑器
 pcman -S leafpad
-# Konsole
-pacman -S konsole
-
-# browser
-pacman -S firefox flashplugin
 
 # 开启 vmware 目录共享
 
@@ -25,41 +18,24 @@ vmhgfs-fuse -o allow_other -o auto_unmount .host:/share /mnt
 # 或
 echo '.host:/share /mnt fuse.vmhgfs-fuse defaults 0 0' >> /etc/fstab
 
-# 安装 yaoout 的图形界面.
-yaourt -S pamac-aur
-
 yaourt -S deepin-screenshot
 
 # 思维导图软件.
 yaourt -S xmind-zen
-
-# 安装多媒体相关的解码库: (安装 vlc 即可.)
-yaourt -S vlc
 
 # 这个是和声卡有关的, 还不知道干嘛用.
 # It also offers easy network streaming across local devices using Avahi if enabled.
 systemctl enable avahi-daemon
 systemctl start avahi-daemon
 
-pacman -S gparted
-
-pacman -S fcitx-im fcitx-sunpinyin fcitx-configtool
-
-# wine 以及浏览器支持, .NET 支持
-pacman -S wine wine_gecko wine-mono
-
 # dota 只能用 primus 包里面的 primusrun 来启动才正常.
 pacman -S steam primus
-
-pacman -S okular
 
 # gif, 裁图必须.
 pacman -S imagemagick
 
 # office
 yaourt -S wps-office ttf-wps-fonts
-
-pacman -S linux-headers
 
 yaourt --m-arg "--skippgpcheck" -Sy --noconfirm vmware-workstation
 # VMWARE 网络访问
