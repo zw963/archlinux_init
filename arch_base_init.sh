@@ -41,7 +41,7 @@ fdisk -l
 pacstrap /mnt xorg xorg-xinit xterm
 
 # 如果是笔记本, 触摸板的 synclient 命令需要这个包.
-pacstrap /mnt xf86-input-keyboard xf86-input-mouse xf86-inputpacstrap /mnt gnome
+pacstrap /mnt xf86-input-keyboard xf86-input-mouse xf86-input-synaptics gnome
 
 # genfstab -U /home >> /mnt/etc/fstab  # 要先 mount /home
 
@@ -69,8 +69,6 @@ systemctl enable wicd
 wicd_policy_group=$(cat /etc/dbus-1/system.d/wicd.conf |grep 'policy group'|cut -d'"' -f2)
 gpasswd -a zw963 $wicd_policy_group
 
-pacman -Sy grub && grub-install /dev/sda && grub-mkconfig -o /boot/grub/grub.cfg
-# 安装 yaourt 包管理, FIXME: bash-completion 没有安装
 
 # # 替换 Linux 内核为 RTS 内核:
 
