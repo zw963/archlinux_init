@@ -62,9 +62,6 @@ echo '127.0.0.1 localhost' >> /etc/hosts
 echo '::1 localhost' >> /etc/hosts
 echo '127.0.0.1 arch_linux' >> /etc/hosts
 
-useradd -m zw963
-echo 'zw963 ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
-
 # 安装和配置 grub, 注意, 在更改了内核版本后, 也需要运行 grub-mkconfig
 # 注意：grub2-mkconfig -o /boot/grub/grub.cfg 则是升级内核后，使用 grub 启动通用的办法。
 # 注意目录名，例如：centos 是 /boot/grub2/grub.cfg
@@ -81,6 +78,9 @@ pacman -Sy --noconfirm yaourt bash-completion
 # 创建一些必须的空目录, (安装 vmware 客户端工具必须)
 for x in {0..6}; do mkdir -p /etc/init.d/rc${x}.d; done
 
-echo 'Remember to set password to root and zw963'
+useradd -m zw963
+echo 'zw963 ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+
+echo 'Remember to set password to root and zw963 after reboot'
 echo 'passwd'
 echo 'passwd zw963'
