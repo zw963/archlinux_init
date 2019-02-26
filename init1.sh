@@ -11,8 +11,10 @@ timedatectl set-ntp true && ntpdate pool.ntp.org
 sed -i '1iServer = http://ftp.sjtu.edu.cn/archlinux/$repo/os/$arch' /etc/pacman.d/mirrorlist
 
 # 拷贝文件到 mount 的分区, 如果不加任何参数, 默认只安装 base
-pacstrap /mnt base base-devel cmake
-pacstrap /mnt linux-lts linux-lts-headers
+# 安装 base, 但是替换 linux 为 linux-lts
+pacman -Sg base | cut -d ' ' -f 2 | sed s/^linux\$/linux-lts/g | pacstrap /mnt -
+pacstrap /mnt linux-lts-headers
+pacstrap /mnt base-devel cmake
 
 # 无线网络相关联的包
 pacstrap /mnt iw wpa_supplicant dialog wireless_tools
@@ -68,7 +70,6 @@ echo '127.0.0.1 arch_linux' >> /etc/hosts
 
 pacman -Sy --noconfirm grub
 grub-install /dev/sda
-pacman -Rs linux
 grub-mkconfig -o /boot/grub/grub.cfg
 
 pacman -Sy --noconfirm yaourt bash-completion
