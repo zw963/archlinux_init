@@ -31,7 +31,7 @@ HEREDOC
 
 # 升级时, 忽略内核
 sed -i 's/#IgnorePkg.*=/IgnorePkg = linux linux-headers linux-lts linux-lts-headers/' /mnt/etc/pacman.conf
-sed -i 's/#multilib/multilib/' /mnt/etc/pacman.conf
+sed -i 's/#\[multilib\]/[multilib]/' /mnt/etc/pacman.conf
 
 # 生成 root 分区的 fstab 信息
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -93,6 +93,7 @@ ins pamac-aur
 # 网络相关工具
 ins ntp
 ins openssh
+ins wget
 ins traceroute
 ins bind-tools
 ins rsync
@@ -113,7 +114,7 @@ ins xf86-input-keyboard
 ins xf86-input-mouse
 ins xf86-input-synaptics
 # intel 集成显卡驱动
-ins xf86-video-intel
+ins xf86-video-intel libxss
 
 # 声卡驱动
 pacman -S --noconfirm alsa-utils pavucontrol

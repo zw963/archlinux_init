@@ -16,8 +16,10 @@
 pacman -S xf86-video-intel
 
 # 如果希望安装 Nvidia 闭源驱动, 并且支持 32 位程序.
-pacman -S nvidia-lts lib32-nvidia-utils nvidia-settings
-pacman -S bumblebee lib32-virtualgl mesa-demos
+pacman -S nvidia-lts nvidia-settings
+pacman -S lib32-virtualgl lib32-nvidia-utils
+
+pacman -S bumblebee mesa-demos
 gpasswd -a zw963 bumblebee
 systemctl enable bumblebeed
 
@@ -25,7 +27,8 @@ systemctl enable bumblebeed
 # 2. 修改 /etc/bumblebee/xorg.conf.nvidia
 #    "AutoAddDevices" "false" 替换为 "true"
 #    Option "UseDisplayDevice" "none" 替换为 "true"
-#    Option "AllowEmptyInitialConfiguration"
+#    Option "AllowEmptyInitialConfiguration" 新增
+
 #    添加下面的 config:
 #    Section "Screen"
 #         Identifier "Screen0"
