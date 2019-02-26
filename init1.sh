@@ -70,8 +70,13 @@ echo '127.0.0.1 arch_linux' >> /etc/hosts
 
 pacman -Sy
 
-alias ins='pacman -S --noconfirm'
-alias yao='sudo -u zw963 yaourt -S --noconfirm'
+function ins () {
+    pacman -S --noconfirm "$@"
+}
+
+function yao () {
+    sudo -u zw963 yaourt -S --noconfirm "$@"
+}
 
 # 安装和配置 grub, 注意, 在更改了内核版本后, 也需要运行 grub-mkconfig
 # 注意：grub2-mkconfig -o /boot/grub/grub.cfg 则是升级内核后，使用 grub 启动通用的办法。
