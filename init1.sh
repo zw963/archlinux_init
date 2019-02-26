@@ -1,4 +1,4 @@
-set -x
+set -xe
 
 # 运行的前提条件:
 # 1. 网络已经配置好. (不配置好, 没办法使用 curl 从 github 下载这个文件.)
@@ -17,11 +17,8 @@ pacman -Sg base | cut -d ' ' -f 2 | sed 's#^linux$#linux-lts#g' | pacstrap /mnt 
 pacstrap /mnt linux-lts-headers
 pacstrap /mnt base-devel cmake
 
-# 无线网络相关联的包
-pacstrap /mnt iw wpa_supplicant dialog wireless_tools
-
-# 网络相关工具
-pacstrap /mnt net-tools ntp openssh traceroute bind-tools rsync
+# 配置网络相关联的包
+pacstrap /mnt iw wpa_supplicant dialog wireless_tools net-tools
 
 # 添加交大的 AUR 源
 cat <<'HEREDOC' >> /mnt/etc/pacman.conf
@@ -32,6 +29,7 @@ HEREDOC
 
 # 升级时, 忽略内核
 sed -i 's/#IgnorePkg.*=/IgnorePkg = linux linux-headers linux-lts linux-lts-headers/' /mnt/etc/pacman.conf
+sed -i 's/#multilib/multilib/' /mnt/etc/pacman.conf
 
 # 生成 root 分区的 fstab 信息
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -59,7 +57,6 @@ locale-gen
 
 # 设定 LANG 环境变量 (FIXME: 这个不执行， 看看效果)
 echo 'LANG=en_US.UTF-8' > /etc/locale.conf
-echo 'LANG=en_US.UTF-8' > /etc/locale.conf
 
 # 设定 hostname
 echo 'arch_linux' > /etc/hostname
@@ -71,68 +68,95 @@ echo '127.0.0.1 arch_linux' >> /etc/hosts
 
 pacman -Sy
 
+alias ins='pacman -S --noconfirm'
+alias yao='sudo -u zw963 yaourt -S --noconfirm'
+
 # 安装和配置 grub, 注意, 在更改了内核版本后, 也需要运行 grub-mkconfig
 # 注意：grub2-mkconfig -o /boot/grub/grub.cfg 则是升级内核后，使用 grub 启动通用的办法。
 # 注意目录名，例如：centos 是 /boot/grub2/grub.cfg
-pacman -S --noconfirm grub
+ins grub
 grub-install /dev/sda
 grub-mkconfig -o /boot/grub/grub.cfg
 
-pacman -S --noconfirm cron
+# 安装 yaourt 包管理软件
+ins yaourt
+# yaourt 的图形界面.
+ins pamac-aur
+
+# 网络相关工具
+ins ntp
+ins openssh
+ins traceroute
+ins bind-tools
+ins rsync
+
+ins bash-completion
+
+ins cron
 systemctl enable cronie
 
-pacman -S --noconfirm nfs-utils
+ins nfs-utils
 systemctl enable nfs-server
 systemctl enable rpcbind
 
-pacman -S --noconfirm xorg xorg-xinit xterm xf86-input-keyboard xf86-input-mouse xf86-input-synaptics
-# 安装中文字体, 和英文字体.
-pacman -S --noconfirm wqy-microhei wqy-zenhei ttf-dejavu
-pacman -S --noconfirm gnome
-# 使用 GDM 作为登陆器.
-systemctl enable gdm
-systemctl enable bluetooth
-
-# network manager.
-pacman -S --noconfirm networkmanager network-manager-applet
-systemctl enable NetworkManager
-
-pacman -S --noconfirm konsole okular
-
-pacman -S --noconfirm firefox
-pacman -S --noconfirm flashplugin
-
-# 编辑器
-pacman -S --noconfirm emacs
-# 其他工具
-pacman -S --noconfirm git tree mlocate ntfs-3g
-
-# 类似于 mac 下的 alfred
-pacman -S --noconfirm albert
-
-pacman -S --noconfirm gparted
-
-pacman -S --noconfirm fcitx-im fcitx-sunpinyin fcitx-configtool
-
-# wine 以及浏览器支持, .NET 支持
-pacman -S --noconfirm wine wine_gecko wine-mono
-
-# pamac-aur 的图形界面.
-pacman -S --noconfirm yaourt pamac-aur bash-completion
-
+ins xorg
+ins xorg-xinit
+ins xterm
+ins xf86-input-keyboard
+ins xf86-input-mouse
+ins xf86-input-synaptics
 # intel 集成显卡驱动
-pacman -S --noconfirm xf86-video-intel
+ins xf86-video-intel
+
 # 声卡驱动
 pacman -S --noconfirm alsa-utils pavucontrol
 # 将当前用户加入 audio 分组.
 gpasswd -a zw963 audio
 
+# 安装中文字体
+ins wqy-microhei
+ins wqy-zenhei
+
+# 安装英文字体
+ins ttf-dejavu
+
+ins gnome
+# 使用 GDM 作为登陆器.
+systemctl enable gdm
+systemctl enable bluetooth
+
+# network manager.
+ins networkmanager network-manager-applet
+systemctl enable NetworkManager
+
+ins konsole
+ins okular
+
+ins firefox
+ins flashplugin
+
+ins emacs
+ins git
+ins tree
+ins mlocate
+ins ntfs-3g
+
+# 类似于 mac 下的 alfred
+ins albert
+
+ins gparted
+
+ins fcitx-im fcitx-sunpinyin fcitx-configtool
+
+# wine 以及浏览器支持, .NET 支持
+ins wine wine_gecko wine-mono
+
 # 安装多媒体相关的解码库及 H.264 解码支持
-sudo -u zw963 yaourt -S --noconfirm vlc gst-libav
+yao vlc gst-libav
 
 # 安装 patched 版本的 wicd, 这个版本修复了 wicd-curses 总是崩溃的问题。
 # 这个必须以新用户身份运行, 暂时注释
-sudo -u zw963 yaourt -S --noconfirm wicd-patched
+yao wicd-patched
 
 # 创建一些必须的空目录, (安装 vmware 客户端工具必须)
 for x in {0..6}; do mkdir -p /etc/init.d/rc${x}.d; done
