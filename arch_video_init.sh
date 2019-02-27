@@ -19,16 +19,18 @@ pacman -S xf86-video-intel
 pacman -S nvidia nvidia-settings
 # 32 程序支持
 pacman -S lib32-virtualgl lib32-nvidia-utils
+pacman -S mesa-demos
 
-pacman -S bumblebee mesa-demos
-gpasswd -a zw963 bumblebee
-systemctl enable bumblebeed
+# 这个装上问题多多, 不装反而更好
+# pacman -S bumblebee
+# gpasswd -a zw963 bumblebee
+# systemctl enable bumblebeed
 
 # 1. 取消 /etc/gdm/custom.conf 当中 WaylandEnable=false 的注释.
 # 2. 修改 /etc/bumblebee/xorg.conf.nvidia
 #    "AutoAddDevices" "false" 替换为 "true"
-#    Option "UseDisplayDevice" "none" 替换为 "true"
-#    Option "AllowEmptyInitialConfiguration" 新增
+#    "UseDisplayDevice" "none" 替换为 "true"
+#    Option "AllowEmptyInitialConfiguration" 新增至 Device section.
 
 #    添加下面的 config:
 #    Section "Screen"

@@ -85,11 +85,6 @@ ins grub
 grub-install /dev/sda
 grub-mkconfig -o /boot/grub/grub.cfg
 
-# 安装 yaourt 包管理软件
-ins yaourt
-# yaourt 的图形界面.
-ins pamac-aur
-
 # 网络相关工具
 ins ntp
 ins openssh
@@ -121,14 +116,11 @@ pacman -S --noconfirm alsa-utils pavucontrol
 # 将当前用户加入 audio 分组.
 gpasswd -a zw963 audio
 
-# 安装中文字体
-ins wqy-microhei
-ins wqy-zenhei
-
-# 安装英文字体
-ins ttf-dejavu
+# 安装中文字体及英文字体
+ins wqy-microhei wqy-zenhei ttf-dejavu
 
 ins gnome
+
 # 使用 GDM 作为登陆器.
 systemctl enable gdm
 systemctl enable bluetooth
@@ -158,6 +150,9 @@ ins fcitx-im fcitx-sunpinyin fcitx-configtool
 
 # wine 以及浏览器支持, .NET 支持
 ins wine wine_gecko wine-mono
+
+# 安装 yaourt 包管理软件及图形界面.
+ins yaourt pamac-aur
 
 # 安装多媒体相关的解码库及 H.264 解码支持
 yao vlc gst-libav
