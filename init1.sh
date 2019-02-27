@@ -18,8 +18,9 @@ sed -i '1iServer = http://ftp.sjtu.edu.cn/archlinux/$repo/os/$arch' /etc/pacman.
 # 使用 pacstrap 拷贝文件到 mount 的分区, 不加任何参数, 默认只安装 base.
 # 安装 base, 但是替换 linux 为 linux-lts
 pacman -Sy
-pacman -Sg base | cut -d ' ' -f 2 | sed 's#^linux$#linux-lts#g' | pacstrap /mnt -
-pacstrap /mnt linux-lts-headers
+# pacman -Sg base | cut -d ' ' -f 2 | sed 's#^linux$#linux-lts#g' | pacstrap /mnt -
+pacstrap /mnt base
+pacstrap /mnt linux-headers
 pacstrap /mnt base-devel cmake
 
 # 配置网络相关联的包
