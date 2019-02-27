@@ -6,6 +6,9 @@ set -xe
 # 1. 网络已经配置好. (不配置好, 没办法使用 curl 从 github 下载这个文件.)
 # 2. 已经分区(cfidsk)并格式化(mkfs.ext4 /dev/sda1), 并且成功的 mount 这个分区到 /mnt (mount /dev/sda1 /mnt)
 
+# 确保设定键盘为 US 布局.
+loadkeys us
+
 # 确保系统时间是准确的, 一定确保同步, 否则会造成签名错误.
 timedatectl set-ntp true && ntpdate pool.ntp.org
 
@@ -68,9 +71,6 @@ echo '127.0.0.1 localhost' >> /etc/hosts
 echo '::1 localhost' >> /etc/hosts
 echo '127.0.0.1 arch_linux' >> /etc/hosts
 
-pacman -Sy
-sudo -u zw963 yaourt -Sy
-
 function ins () {
     pacman -S --noconfirm "$@"
 }
@@ -78,6 +78,8 @@ function ins () {
 function yao () {
     sudo -u zw963 yaourt --m-arg "--skippgpcheck" -S --noconfirm "$@"
 }
+
+pacman -Sy
 
 # 安装和配置 grub, 注意, 在更改了内核版本后, 也需要运行 grub-mkconfig
 # 注意：grub2-mkconfig -o /boot/grub/grub.cfg 则是升级内核后，使用 grub 启动通用的办法。
@@ -103,6 +105,7 @@ ins nfs-utils
 systemctl enable nfs-server
 systemctl enable rpcbind
 
+# 最新的 Gnome3 不含 xorg 的, 使用的是 Wayland.
 ins xorg
 ins xorg-xinit
 ins xterm
@@ -154,6 +157,8 @@ ins wine wine_gecko wine-mono
 
 # 安装 yaourt 包管理软件及图形界面.
 ins yaourt pamac-aur
+
+sudo -u zw963 yaourt -Sy
 
 # 安装多媒体相关的解码库及 H.264 解码支持
 yao vlc gst-libav

@@ -1,6 +1,4 @@
 
-# 确保设定键盘为 US 布局.
-loadkeys us
 # 确保网络畅通. (使用 dhcpcd)
 ping -c3 archlinux.org
 
