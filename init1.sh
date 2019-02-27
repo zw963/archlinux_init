@@ -15,8 +15,8 @@ sed -i '1iServer = http://ftp.sjtu.edu.cn/archlinux/$repo/os/$arch' /etc/pacman.
 # 使用 pacstrap 拷贝文件到 mount 的分区, 不加任何参数, 默认只安装 base.
 # 安装 base, 但是替换 linux 为 linux-lts
 pacman -Sy
-pacman -Sg base | cut -d ' ' -f 2 | sed 's#^linux$#linux-lts414#g' | pacstrap /mnt -
-pacstrap /mnt linux-lts414-headers
+pacman -Sg base | cut -d ' ' -f 2 | sed 's#^linux$#linux-lts#g' | pacstrap /mnt -
+pacstrap /mnt linux-lts-headers
 pacstrap /mnt base-devel cmake
 
 # 配置网络相关联的包
@@ -31,7 +31,7 @@ HEREDOC
 
 # 升级时, 忽略内核
 sed -i 's/#IgnorePkg.*=/IgnorePkg = linux linux-headers linux-lts linux-lts-headers/' /mnt/etc/pacman.conf
-sed -i 's#\#\[multilib\]#[multilib]\nInclude = /etc/pacman.d/mirrorlist#' /etc/pacman.conf
+sed -i 's#\#\[multilib\]#[multilib]\nInclude = /etc/pacman.d/mirrorlist#' /mnt/etc/pacman.conf
 
 # 生成 root 分区的 fstab 信息
 genfstab -U /mnt >> /mnt/etc/fstab
