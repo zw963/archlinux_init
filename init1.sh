@@ -69,13 +69,14 @@ echo '::1 localhost' >> /etc/hosts
 echo '127.0.0.1 arch_linux' >> /etc/hosts
 
 pacman -Sy
+sudo -u zw963 yaourt -Sy
 
 function ins () {
     pacman -S --noconfirm "$@"
 }
 
 function yao () {
-    sudo -u zw963 yaourt -S --noconfirm "$@"
+    sudo -u zw963 yaourt --m-arg "--skippgpcheck" -S --noconfirm "$@"
 }
 
 # 安装和配置 grub, 注意, 在更改了内核版本后, 也需要运行 grub-mkconfig
@@ -160,6 +161,14 @@ yao vlc gst-libav
 # 安装 patched 版本的 wicd, 这个版本修复了 wicd-curses 总是崩溃的问题。
 # 这个必须以新用户身份运行, 暂时注释
 yao wicd-patched
+
+yao vmware-workstation
+# VMWARE 网络访问
+systemctl enable vmware-networks.service
+# VMWARE USB 共享
+systemctl enable vmware-usbarbitrator.service
+# VMWARE 目录共享
+systemctl enable vmware-hostd.service
 
 # 创建一些必须的空目录, (安装 vmware 客户端工具必须)
 for x in {0..6}; do mkdir -p /etc/init.d/rc${x}.d; done
