@@ -105,18 +105,18 @@ ins nfs-utils
 systemctl enable nfs-server
 systemctl enable rpcbind
 
-# 最新的 Gnome3 不含 xorg 的, 使用的是 Wayland.
-ins xorg
-ins xorg-xinit
-ins xterm
-ins xf86-input-keyboard
-ins xf86-input-mouse
-ins xf86-input-synaptics
-# intel 集成显卡驱动
-ins xf86-video-intel libxss
+# # 最新的 Gnome3 不含 xorg 的, 使用的是 Wayland.
+# ins xorg
+# ins xorg-xinit
+# ins xterm
+# ins xf86-input-keyboard
+# ins xf86-input-mouse
+# ins xf86-input-synaptics
+# # intel 集成显卡驱动
+# ins xf86-video-intel libxss
 
 # 声卡驱动
-pacman -S --noconfirm alsa-utils pavucontrol
+ins alsa-utils pavucontrol
 # 将当前用户加入 audio 分组.
 gpasswd -a zw963 audio
 
