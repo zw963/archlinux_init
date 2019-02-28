@@ -125,6 +125,7 @@ gpasswd -a zw963 audio
 ins wqy-microhei wqy-zenhei ttf-dejavu
 
 ins gnome
+ins xorg-xprop
 
 # 使用 GDM 作为登陆器.
 systemctl enable gdm
