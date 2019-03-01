@@ -124,8 +124,10 @@ gpasswd -a zw963 audio
 # 安装中文字体及英文字体
 ins wqy-microhei wqy-zenhei ttf-dejavu
 
-ins gnome
+ins gnome gnome-extra
 ins xorg-xprop
+ins budgie-desktop
+ins cinnamon
 
 # 使用 GDM 作为登陆器.
 systemctl enable gdm
