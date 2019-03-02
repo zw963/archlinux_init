@@ -76,3 +76,11 @@ gpasswd -a zw963 $wicd_policy_group
 
 # 重启后, 运行 dhcpcd wls1 服务, 否则上不了网.
 # 最后,切记不要开启 dhcpcd 服务, 这和启动 X 之后的 NetworkManager 冲突
+
+# 启动问题修复
+
+# 1. 打开 /etc/default/grub
+# 2. 找到 GRUB_CMDLINE_LINUX_DEFAULT=
+# 3. 在后面附上内核参数. 例如: 开启 CPU 浮点数.
+#    GRUB_CMDLINE_LINUX_DEFAULT="quiet random.trust_cpu=on
+# 4. 运行 grub-mkconfig -o /boot/grub/grub.cfg 重新生成内核配置文件.
