@@ -82,5 +82,5 @@ gpasswd -a zw963 $wicd_policy_group
 # 1. 打开 /etc/default/grub
 # 2. 找到 GRUB_CMDLINE_LINUX_DEFAULT=
 # 3. 在后面附上内核参数. 例如: 开启 CPU 浮点数.
-#    GRUB_CMDLINE_LINUX_DEFAULT="quiet random.trust_cpu=on
+#    GRUB_CMDLINE_LINUX_DEFAULT="quiet random.trust_cpu=on"
 # 4. 运行 grub-mkconfig -o /boot/grub/grub.cfg 重新生成内核配置文件.

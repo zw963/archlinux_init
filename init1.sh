@@ -19,12 +19,9 @@ sed -i '1iServer = http://ftp.sjtu.edu.cn/archlinux/$repo/os/$arch' /etc/pacman.
 # 安装 base, 但是替换 linux 为 linux-lts
 pacman -Sy
 # pacman -Sg base | cut -d ' ' -f 2 | sed 's#^linux$#linux-lts#g' | pacstrap /mnt -
-pacstrap /mnt base
-pacstrap /mnt linux-headers
-pacstrap /mnt base-devel cmake
-
-# 配置网络相关联的包
-pacstrap /mnt iw wpa_supplicant dialog wireless_tools net-tools
+pacstrap /mnt base base-devel linux-headers cmake \
+         iw wpa_supplicant dialog wireless_tools net-tools \
+         networkmanager network-manager-applet
 
 # 添加交大的 AUR 源
 cat <<'HEREDOC' >> /mnt/etc/pacman.conf
@@ -134,7 +131,6 @@ systemctl enable gdm
 systemctl enable bluetooth
 
 # network manager.
-ins networkmanager network-manager-applet
 systemctl enable NetworkManager
 
 ins konsole
