@@ -17,8 +17,9 @@ sed -i '1iServer = http://ftp.sjtu.edu.cn/archlinux/$repo/os/$arch' /etc/pacman.
 
 # 使用 pacstrap 拷贝文件到 mount 的分区, 不加任何参数, 默认只安装 base.
 # 安装 base, 但是替换 linux 为 linux-lts
-pacman -Sy
+# pacman -Sy
 # pacman -Sg base | cut -d ' ' -f 2 | sed 's#^linux$#linux-lts#g' | pacstrap /mnt -
+
 pacstrap /mnt base base-devel linux-headers cmake \
          iw wpa_supplicant dialog wireless_tools net-tools \
          networkmanager network-manager-applet
@@ -82,9 +83,11 @@ pacman -Sy
 # 安装和配置 grub, 注意, 在更改了内核版本后, 也需要运行 grub-mkconfig
 # 注意：grub2-mkconfig -o /boot/grub/grub.cfg 则是升级内核后，使用 grub 启动通用的办法。
 # 注意目录名，例如：centos 是 /boot/grub2/grub.cfg
-ins grub
-grub-install /dev/sda
-grub-mkconfig -o /boot/grub/grub.cfg
+
+# 注意: 新版安装程序貌似不需要这个步骤了.
+# ins grub
+# grub-install /dev/sda
+# grub-mkconfig -o /boot/grub/grub.cfg
 
 # 网络相关工具
 ins ntp
