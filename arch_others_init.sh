@@ -1,6 +1,6 @@
 
 pacman -S skype
-pacman -S jdk8-openjdk
+
 
 # 更新 pacman 以及社区源的本地数据库
 pacman -Fyy

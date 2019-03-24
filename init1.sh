@@ -124,7 +124,7 @@ gpasswd -a zw963 audio
 # 安装中文字体及英文字体
 ins wqy-microhei wqy-zenhei ttf-dejavu
 
-ins gnome gnome-extra
+ins gnome gnome-extra gconf
 ins xorg-xprop
 ins budgie-desktop
 ins cinnamon
@@ -138,6 +138,7 @@ systemctl enable NetworkManager
 
 ins konsole
 ins okular
+ins mupdf                       # 一个很简单的 pdf reader.
 
 ins firefox
 ins flashplugin
@@ -152,6 +153,9 @@ ins ntfs-3g
 ins albert
 
 ins gparted
+
+ins llvm
+ins jdk8-openjdk
 
 ins fcitx-im fcitx-sunpinyin fcitx-configtool
 

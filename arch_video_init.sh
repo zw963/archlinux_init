@@ -15,14 +15,11 @@
 # Intel
 pacman -S xf86-video-intel
 
-# 如果希望安装 Nvidia 闭源驱动, 并且支持 32 位程序.
-pacman -S nvidia nvidia-settings
-# 32 程序支持
-pacman -S lib32-virtualgl lib32-nvidia-utils
-pacman -S mesa-demos
+# 如果希望安装 Nvidia 闭源驱动, 并且安装 32 程序支持
+pacman -S nvidia nvidia-settings lib32-nvidia-utils mesa-demos
 
 # 这个装上问题多多, 不装反而更好
-# pacman -S bumblebee
+# pacman -S bumblebee lib32-virtualgl
 # gpasswd -a zw963 bumblebee
 # systemctl enable bumblebeed
 
@@ -35,7 +32,7 @@ pacman -S mesa-demos
 #    添加下面的 config:
 #    Section "Screen"
 #         Identifier "Screen0"
-#         Device "DiscreteNVidia"
+#         Device "DiscreteNvidia"
 #     EndSection
 # 3.  create /usr/share/X11/xorg.conf.d/20-intel.conf
 # Section "Device"
