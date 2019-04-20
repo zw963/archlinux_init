@@ -17,10 +17,9 @@ sed -i '1iServer = http://ftp.sjtu.edu.cn/archlinux/$repo/os/$arch' /etc/pacman.
 
 # 使用 pacstrap 拷贝文件到 mount 的分区, 不加任何参数, 默认只安装 base.
 # 安装 base, 但是替换 linux 为 linux-lts
-# pacman -Sy
-# pacman -Sg base | cut -d ' ' -f 2 | sed 's#^linux$#linux-lts#g' | pacstrap /mnt -
-
-pacstrap /mnt base base-devel linux-headers cmake \
+pacman -Sy
+pacman -Sg base | cut -d ' ' -f 2 | sed 's#^linux$#linux-lts#g' | pacstrap /mnt -
+pacstrap /mnt base-devel linux-lts-headers cmake \
          iw wpa_supplicant dialog wireless_tools net-tools \
          networkmanager network-manager-applet
 
@@ -93,6 +92,7 @@ pacman -Sy
 ins ntp
 ins openssh
 ins wget
+ins netcat
 ins traceroute
 ins bind-tools
 ins rsync
@@ -137,7 +137,8 @@ systemctl enable bluetooth
 systemctl enable NetworkManager
 
 ins konsole
-ins okular
+# poppler-data 必选安装, 否则可能某些中文显示不正常.
+ins okular poppler-data
 ins mupdf                       # 一个很简单的 pdf reader.
 
 ins firefox
@@ -153,6 +154,8 @@ ins ntfs-3g
 ins albert
 
 ins gparted
+
+ins gimp
 
 ins llvm
 ins jdk8-openjdk
