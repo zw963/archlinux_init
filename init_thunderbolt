@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# This seem like only worked for Gnome since version 3.30
+
+if ! test -e /etc/udev/rules.d/99-removable.rules; then
+    cat <<'HEREDOC' > /etc/udev/rules.d/99-removable.rules
+ACTION=="add", SUBSYSTEM=="thunderbolt", ATTR{authorized}=="0", ATTR{authorized}="1"
+HEREDOC
+fi
