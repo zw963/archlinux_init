@@ -31,9 +31,6 @@ systemctl start avahi-daemon
 # dota 只能用 primus 包里面的 primusrun 来启动才正常.
 pacman -S steam primus
 
-# gif, 裁图必须.
-pacman -S imagemagick
-
 # office
 yaourt -S wps-office ttf-wps-fonts
 

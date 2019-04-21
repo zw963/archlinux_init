@@ -23,6 +23,8 @@ EndSection
 HEREDOC
 fi
 
+# Following config definition, see: http://us.download.nvidia.com/XFree86/Linux-x86_64/418.56/README/xconfigoptions.html
+
 if [ -e /etc/bumblebee/xorg.conf.nvidia ]; then
     # "AutoAddDevices" "false" 替换为 "true"
     # "UseDisplayDevice" "none" 替换为 "true"

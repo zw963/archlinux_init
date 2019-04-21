@@ -155,8 +155,6 @@ ins albert
 
 ins gparted
 
-ins gimp
-
 ins llvm
 ins jdk8-openjdk
 
@@ -168,10 +166,12 @@ ins wine wine_gecko wine-mono
 # 安装 yaourt 包管理软件及图形界面.
 ins yaourt pamac-aur
 
+ins gimp imagemagick
+
 sudo -u zw963 yaourt -Sy
 
 # 安装多媒体相关的解码库及 H.264 解码支持
-yao vlc gst-libav
+yao ffmpeg vlc gst-libav
 
 # 安装 patched 版本的 wicd, 这个版本修复了 wicd-curses 总是崩溃的问题。
 # 这个必须以新用户身份运行, 暂时注释
