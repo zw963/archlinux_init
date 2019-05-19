@@ -158,6 +158,7 @@ ins ntfs-3g
 
 # 类似于 mac 下的 alfred
 ins albert
+ins peek
 
 ins gparted
 
