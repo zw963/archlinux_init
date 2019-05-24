@@ -2,12 +2,15 @@
 
 # 要安装 intel 驱动，因为启动时要使用 intel 驱动,
 # 稍后要使用 intel-virtual-output 实现 triple screen.
+
+# pacman -R xf86-video-intel nvidia-lts nvidia-settings nvidia-utils lib32-nvidia-utils mesa-demos bumblebee virtualgl lib32-virtualgl
+
 pacman -S xf86-video-intel
 
 # 安装 lts (注意和内核一致)
-pacman -S nvidia-lts nvidia-settings lib32-nvidia-utils mesa-demos
+pacman -S nvidia-lts nvidia-settings nvidia-utils lib32-nvidia-utils mesa-demos
 
-pacman -S bumblebee lib32-virtualgl
+pacman -S bumblebee virtualgl lib32-virtualgl
 gpasswd -a zw963 bumblebee
 systemctl enable bumblebeed
 

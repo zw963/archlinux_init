@@ -31,7 +31,7 @@ Server = https://mirrors.sjtug.sjtu.edu.cn/archlinux-cn/$arch
 HEREDOC
 
 # 升级时, 忽略内核
-sed -i 's/#IgnorePkg.*=/IgnorePkg = linux linux-headers linux-lts linux-lts-headers/' /mnt/etc/pacman.conf
+# sed -i 's/#IgnorePkg.*=/IgnorePkg = linux linux-headers linux-lts linux-lts-headers/' /mnt/etc/pacman.conf
 sed -i 's#\#\[multilib\]#[multilib]\nInclude = /etc/pacman.d/mirrorlist#' /mnt/etc/pacman.conf
 
 # 生成 root 分区的 fstab 信息
@@ -183,6 +183,8 @@ yao ffmpeg vlc gst-libav
 # 安装 patched 版本的 wicd, 这个版本修复了 wicd-curses 总是崩溃的问题。
 # 这个必须以新用户身份运行, 暂时注释
 yao wicd-patched
+
+ins virtualbox virtualbox-guest-iso
 
 yao vmware-workstation
 # VMWARE 网络访问
