@@ -81,10 +81,10 @@ pacman -Sy
 ins yaourt
 sudo -u zw963 yaourt -Sy
 
-# # 声卡驱动, this is not need.
-# ins alsa-utils pavucontrol
-# # 将当前用户加入 audio 分组.
-# gpasswd -a zw963 audio
+# 声卡驱动, this is need for support macro-phone.
+ins alsa-utils pavucontrol
+# 将当前用户加入 audio 分组.
+gpasswd -a zw963 audio
 
 ins wget rsync openssh ntp mlocate ntfs-3g git tree bind-tools gnu-netcat
 
@@ -140,7 +140,7 @@ ins wine wine_gecko wine-mono
 ins gimp imagemagick
 
 # library
-ins llvm jdk8-openjdk
+ins llvm jdk8-openjdk nodejs npm yarn postgresql
 
 # 安装多媒体相关的解码库及 H.264 解码支持
 yao ffmpeg vlc gst-libav
@@ -148,6 +148,7 @@ yao ffmpeg vlc gst-libav
 yao deepin.com.qq.office
 yao deepin.com.thunderspeed
 yao deepin-wine-wechat
+yao deepin-baidu-pan
 
 # following package need be install manually after reboot.
 

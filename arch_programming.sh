@@ -1,5 +1,5 @@
 
-pacman -S node npm yarn
+pacman -S nodejs npm yarn
 # mysql, 或者 mysql-clients (archlinuxcn)
 pacman -S mariadb-clients
 # pg not split to server and client.

@@ -2,8 +2,6 @@
 
 # 使用 cinnamon 作为桌面.
 pacman -S cinnamon nemo-fileroller
-# 一个基本的图形编辑器
-pcman -S leafpad
 
 # 开启 vmware 目录共享
 
@@ -29,7 +27,7 @@ systemctl enable avahi-daemon
 systemctl start avahi-daemon
 
 # dota 只能用 primus 包里面的 primusrun 来启动才正常.
-pacman -S steam primus
+pacman -S primus
 
 # office
 yaourt -S wps-office ttf-wps-fonts
@@ -44,10 +42,6 @@ systemctl start vmware-usbarbitrator.service
 # VMWARE 目录共享
 systemctl enable vmware-hostd.service
 systemctl start vmware-hostd.service
-
-yaourt --m-arg "--skippgpcheck" -Sy --noconfirm deepin.com.qq.office
-yaourt --m-arg "--skippgpcheck" -Sy --noconfirm deepin-wechat
-yaourt --m-arg "--skippgpcheck" -Sy --noconfirm deepin.com.thunderspeed
 
 # pacman -S geany
 # #pacman -S lilyterm
