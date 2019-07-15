@@ -30,7 +30,7 @@ Server = https://mirrors.sjtug.sjtu.edu.cn/archlinux-cn/$arch
 HEREDOC
 
 # 升级时, 忽略内核和所有 nvidia 包.
-sed -i 's/#IgnorePkg.*=/IgnorePkg = linux linux-headers linux-lts linux-lts-headers nvidia nvidia-lts nvidia-settings nvidia-utils/' /mnt/etc/pacman.conf
+sed -i 's/#IgnorePkg.*=/IgnorePkg = linux linux-headers linux-lts linux-lts-headers nvidia nvidia-lts nvidia-settings nvidia-utils virtualbox virtualbox-guest-iso virtualbox-guest-iso/' /mnt/etc/pacman.conf
 sed -i 's#\#\[multilib\]#[multilib]\nInclude = /etc/pacman.d/mirrorlist#' /mnt/etc/pacman.conf
 
 # 生成 root 分区的 fstab 信息
@@ -81,12 +81,13 @@ pacman -Sy
 ins yaourt
 sudo -u zw963 yaourt -Sy
 
-# 声卡驱动, this is need for support macro-phone.
+# 声卡驱动, this is need for support macrophone.
 ins alsa-utils pavucontrol
 # 将当前用户加入 audio 分组.
 gpasswd -a zw963 audio
 
 ins wget rsync openssh ntp mlocate ntfs-3g git tree bind-tools gnu-netcat
+systemctl enable ntpdate
 
 # mtr工具的主要作用是在于两点丢包时候的异常点排查及路径搜集，是ping和tracert的结合。
 # 相比于ping它会有路由节点的展示，而相对于tracert它会展示中间路由节点的丢包情况，
@@ -129,6 +130,8 @@ sed -r -i -e "s/#(WaylandEnable=false)/\1/" /etc/gdm/custom.conf
 
 # poppler-data needed for pdf show chinese chars.
 ins okular poppler-data
+
+ins proxychains-ng redsocks
 
 # qt4 is need for bcompare.
 ins qt4
