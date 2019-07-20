@@ -11,6 +11,9 @@ loadkeys us # 确保设定键盘为 US 布局.
 # 确保系统时间是准确的, 一定确保同步, 否则会造成签名错误.
 timedatectl set-ntp true && ntpdate pool.ntp.org
 
+# 是否需要运行下面的命令, 来使用本地时钟?
+# timedatectl set-local-rtc true
+
 # 设定上海交大源为首选源, 速度更快
 sed -i '1iServer = http://ftp.sjtu.edu.cn/archlinux/$repo/os/$arch' /etc/pacman.d/mirrorlist
 
@@ -46,7 +49,7 @@ useradd -m zw963
 echo 'zw963 ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 
 # 设定上海为当前时区, 并保存时间到主机, hwclock 会生成: /etc/adjtime
-ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && hwclock --systohc --utc
+ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && hwclock --systohc --localtime
 
 function add_config () {
     pattern="$1"
@@ -78,6 +81,7 @@ function yao () {
 }
 
 pacman -Sy
+pacman -Fy
 ins yaourt
 sudo -u zw963 yaourt -Sy
 
@@ -116,7 +120,7 @@ ins emacs ttf-dejavu wqy-microhei wqy-zenhei
 
 ins gnome gnome-extra gconf budgie-desktop gparted \
     networkmanager network-manager-applet \
-    emacs firefox flashplugin konsole \
+    firefox flashplugin konsole \
     fcitx-im fcitx-sunpinyin fcitx-configtool \
     wps-office ttf-wps-fonts \
     peek albert leafpad pamac-aur skype
@@ -167,3 +171,4 @@ yao deepin-baidu-pan
 # sudo modprobe vboxdrv
 # virtualbox_version=$(pacman -Qi virtualbox |grep 'Version' |awk -F: '{print $2}'|grep -o '[0-9]*\.[0-9]*\.[0-9]')
 # wget https://download.virtualbox.org/virtualbox/6.0.8/Oracle_VM_VirtualBox_Extension_Pack-${virtualbox_version}.vbox-extpack -P ~/Downloads/
+# pci=nommconf
