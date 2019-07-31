@@ -82,7 +82,8 @@ function yao () {
 
 pacman -Sy
 pacman -Fy
-ins yaourt
+# ins yaourt
+ins yay
 sudo -u zw963 yaourt -Sy
 
 # 声卡驱动, this is need for support macrophone.
@@ -118,10 +119,11 @@ ins xf86-input-synaptics xf86-input-keyboard xf86-input-mouse
 # ttf-dejavu is need for emacs support active fcitx.
 ins emacs ttf-dejavu wqy-microhei wqy-zenhei
 
+ins firefox chromium flashplugin
+
 ins gnome gnome-extra gconf budgie-desktop gparted \
     networkmanager network-manager-applet \
-    firefox flashplugin konsole \
-    fcitx-im fcitx-sunpinyin fcitx-configtool \
+    konsole fcitx-im fcitx-sunpinyin fcitx-configtool \
     wps-office ttf-wps-fonts \
     peek albert leafpad pamac-aur skype
 
