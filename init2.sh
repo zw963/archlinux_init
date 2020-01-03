@@ -16,6 +16,8 @@ timedatectl set-ntp true && ntpdate pool.ntp.org
 
 # 设定上海交大源为首选源, 速度更快
 sed -i '1iServer = http://ftp.sjtu.edu.cn/archlinux/$repo/os/$arch' /etc/pacman.d/mirrorlist
+# 如果是北方网通, 清华源更快
+# sed -i '1iServer = https://mirrors.tuna.tsinghua.edu.cn/archlinux/$repo/os/$arch' /etc/pacman.d/mirrorlist
 
 # # use lts linux kernel.
 # pacman -Sy
@@ -23,12 +25,14 @@ sed -i '1iServer = http://ftp.sjtu.edu.cn/archlinux/$repo/os/$arch' /etc/pacman.
 # pacstrap /mnt base-devel linux-lts-headers cmake \
     #          iw wpa_supplicant dialog wireless_tools net-tools
 
-pacstrap /mnt base base-devel cmake iw wpa_supplicant dialog wireless_tools net-tools
+# wol 是 wake on line 工具
+pacstrap /mnt base base-devel cmake iw wpa_supplicant dialog wireless_tools net-tools wol
 
 # 添加交大的 AUR 源
 cat <<'HEREDOC' >> /mnt/etc/pacman.conf
 [archlinuxcn]
 SigLevel = Optional TrustAll
+# Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch
 Server = https://mirrors.sjtug.sjtu.edu.cn/archlinux-cn/$arch
 HEREDOC
 
@@ -77,21 +81,22 @@ function ins () {
 }
 
 function yao () {
-    sudo -u zw963 yaourt --m-arg "--skippgpcheck" -S --noconfirm "$@"
+    # sudo -u zw963 yaourt --m-arg "--skippgpcheck" -S --noconfirm "$@"
+    sudo -u zw963 yay -S --noconfirm "$@";
 }
 
 pacman -Sy
 pacman -Fy
 # ins yaourt
 ins yay
-sudo -u zw963 yaourt -Sy
+# sudo -u zw963 yaourt -Sy
 
 # 声卡驱动, this is need for support macrophone.
 ins alsa-utils pavucontrol
 # 将当前用户加入 audio 分组.
 gpasswd -a zw963 audio
 
-ins wget rsync openssh ntp mlocate ntfs-3g git tree bind-tools gnu-netcat
+ins wget rsync openssh ntp mlocate ntfs-3g git tree bind-tools gnu-netcat tcpdump
 systemctl enable ntpdate
 
 # mtr工具的主要作用是在于两点丢包时候的异常点排查及路径搜集，是ping和tracert的结合。
@@ -110,11 +115,21 @@ systemctl enable cronie
 # mesa-demos add glxgears command to detect display card.
 ins xorg-xprop xorg-xset xorg-xrandr mesa-demos
 
+# xf86-input-libinput 提供了替代 synaptics 的接口，同时在 X 和 Wayland 下可用。
+# 并且开启类似苹果的多键滑动
+# xinput 用来通过命令方式设定 libinput 参数。(类似于 synclient)
+ins xf86-input-libinput libinput-gestures xorg-xinput
+usermod -a -G input input
+libinput-gestures-setup autostart
+
+# 必装，它提供了 daemon 用来检测当前键盘是否在 typing, 并关闭 touch.
+# ins xf86-input-synaptics
+
 # synaptics make touchpad can working.
 # if only install synaptics, will make xmodmap broken.
 # need install xf86-input-keyboard to fix it.
 # xf86-input-mouse no reason to install, just try.
-ins xf86-input-synaptics xf86-input-keyboard xf86-input-mouse
+ins  xf86-input-keyboard xf86-input-mouse
 
 # ttf-dejavu is need for emacs support active fcitx.
 ins emacs ttf-dejavu wqy-microhei wqy-zenhei
@@ -123,9 +138,10 @@ ins firefox chromium flashplugin
 
 ins gnome gnome-extra gconf budgie-desktop gparted \
     networkmanager network-manager-applet \
-    konsole fcitx-im fcitx-sunpinyin fcitx-configtool \
+    konsole wireshark-qt fcitx-im fcitx-sunpinyin fcitx-configtool \
     wps-office ttf-wps-fonts \
-    peek albert leafpad pamac-aur skype
+    copyq albert \
+    peek leafpad pamac-aur skype
 
 systemctl enable NetworkManager
 systemctl enable gdm # use GDM as display manager
@@ -161,10 +177,15 @@ yao deepin-baidu-pan
 
 # following package need be install manually after reboot.
 
+ins lutris lib32-vulkan-intel vulkan-intel lib32-vulkan-intel vulkan-icd-loader lib32-vulkan-icd-loader
+
 # ins steam steam-native-runtime
 
 # # nvidia tools
 # ins nvidia nvidia-settings nvidia-utils lib32-nvidia-utils
+
+ins virtualbox virtualbox-guest-iso virtualbox-host-modules-arch
+yao virtualbox-ext-oracle
 
 # # if use linux kernel(non lts), must use virtualbox-host-modules-arch
 # ins virtualbox-host-modules-arch
