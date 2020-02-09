@@ -141,7 +141,9 @@ ins gnome gnome-extra gconf budgie-desktop gparted \
     konsole wireshark-qt fcitx-im fcitx-sunpinyin fcitx-configtool \
     wps-office ttf-wps-fonts \
     copyq albert \
-    peek leafpad pamac-aur skype
+    peek leafpad pamac-aur
+
+ins skype telegram-desktop
 
 systemctl enable NetworkManager
 systemctl enable gdm # use GDM as display manager
