@@ -91,6 +91,8 @@ pacman -Fy
 ins yay
 # sudo -u zw963 yaourt -Sy
 
+ins pacman-contrib
+
 # 声卡驱动, this is need for support macrophone.
 ins alsa-utils pavucontrol
 # 将当前用户加入 audio 分组.
