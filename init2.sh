@@ -136,7 +136,7 @@ ins  xf86-input-keyboard xf86-input-mouse
 # ttf-dejavu is need for emacs support active fcitx.
 ins emacs ttf-dejavu wqy-microhei wqy-zenhei
 
-ins firefox chromium flashplugin
+ins firefox chromium flashplugin next-browser
 
 ins gnome gnome-extra gconf budgie-desktop gparted \
     networkmanager network-manager-applet \
