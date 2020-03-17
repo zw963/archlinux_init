@@ -142,8 +142,8 @@ ins gnome gnome-extra gconf budgie-desktop gparted \
     networkmanager network-manager-applet \
     konsole wireshark-qt fcitx-im fcitx-sunpinyin fcitx-configtool \
     wps-office ttf-wps-fonts \
-    copyq albert \
-    peek leafpad pamac-aur
+    flameshot peek copyq albert \
+    leafpad pamac-aur
 
 ins skype telegram-desktop
 
