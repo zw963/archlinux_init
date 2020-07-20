@@ -93,13 +93,25 @@ ins yay
 
 ins pacman-contrib
 
+
 # 声卡驱动, this is need for support macrophone.
 ins alsa-utils pavucontrol
 # 将当前用户加入 audio 分组.
 gpasswd -a zw963 audio
 
-ins wget rsync openssh ntp mlocate ntfs-3g git tree bind-tools gnu-netcat tcpdump
+ins wget rsync openssh ntp mlocate ntfs-3g git tree bind gnu-netcat tcpdump
 systemctl enable ntpdate
+
+# 分析磁盘 IO 的工具.
+ins sysstat iotop
+
+# printer
+# settings printer with:
+# hp-setup -i 192.168.50.145 (192.168.50.145 is printer IP)
+# another way is to use CUPS, http://127.0.0.1:631
+
+ins cpus hplip
+systemctl enable org.cups.cupsd
 
 # mtr工具的主要作用是在于两点丢包时候的异常点排查及路径搜集，是ping和tracert的结合。
 # 相比于ping它会有路由节点的展示，而相对于tracert它会展示中间路由节点的丢包情况，
@@ -143,7 +155,7 @@ ins gnome gnome-extra gconf budgie-desktop gparted \
     konsole wireshark-qt fcitx-im fcitx-sunpinyin fcitx-configtool \
     wps-office ttf-wps-fonts \
     flameshot peek copyq albert \
-    leafpad pamac-aur
+    leafpad pamac-aur neofetch
 
 ins skype telegram-desktop
 
@@ -190,6 +202,18 @@ ins lutris lib32-vulkan-intel vulkan-intel lib32-vulkan-intel vulkan-icd-loader 
 
 ins virtualbox virtualbox-guest-iso virtualbox-host-modules-arch
 yao virtualbox-ext-oracle
+
+yao vmware-workstation
+
+# VMWARE 网络访问
+systemctl enable vmware-networks.service
+# VMWARE USB 共享
+systemctl enable vmware-usbarbitrator.service
+# VMWARE 目录共享
+systemctl enable vmware-hostd.service
+# 创建一些必须的空目录, (安装 vmware 客户端工具必须)
+for x in {0..6}; do mkdir -p /etc/init.d/rc${x}.d; done
+
 
 # # if use linux kernel(non lts), must use virtualbox-host-modules-arch
 # ins virtualbox-host-modules-arch
