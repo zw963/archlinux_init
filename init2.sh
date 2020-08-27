@@ -15,25 +15,21 @@ timedatectl set-ntp true && ntpdate pool.ntp.org
 # timedatectl set-local-rtc true
 
 # 设定上海交大源为首选源, 速度更快
-sed -i '1iServer = http://ftp.sjtu.edu.cn/archlinux/$repo/os/$arch' /etc/pacman.d/mirrorlist
+# sed -i '1iServer = http://ftp.sjtu.edu.cn/archlinux/$repo/os/$arch' /etc/pacman.d/mirrorlist
 # 如果是北方网通, 清华源更快
-# sed -i '1iServer = https://mirrors.tuna.tsinghua.edu.cn/archlinux/$repo/os/$arch' /etc/pacman.d/mirrorlist
-
-# # use lts linux kernel.
-# pacman -Sy
-# pacman -Sg base | cut -d ' ' -f 2 | sed 's#^linux$#linux-lts#g' | pacstrap /mnt -
-# pacstrap /mnt base-devel linux-lts-headers cmake \
-    #          iw wpa_supplicant dialog wireless_tools net-tools
+sed -i '1iServer = https://mirrors.tuna.tsinghua.edu.cn/archlinux/$repo/os/$arch' /etc/pacman.d/mirrorlist
 
 # wol 是 wake on line 工具
-pacstrap /mnt base base-devel cmake iw wpa_supplicant dialog wireless_tools net-tools wol
+pacstrap /mnt linux linux-headers linux-firmware base base-devel gnome \
+         budgie-desktop networkmanager network-manager-applet cmake \
+         iw wpa_supplicant dialog wireless_tools net-tools wol
 
 # 添加交大的 AUR 源
 cat <<'HEREDOC' >> /mnt/etc/pacman.conf
 [archlinuxcn]
 SigLevel = Optional TrustAll
-# Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch
-Server = https://mirrors.sjtug.sjtu.edu.cn/archlinux-cn/$arch
+Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch
+# Server = https://mirrors.sjtug.sjtu.edu.cn/archlinux-cn/$arch
 HEREDOC
 
 # 升级时, 忽略内核和所有 nvidia 包.
@@ -93,7 +89,6 @@ ins yay
 
 ins pacman-contrib
 
-
 # 声卡驱动, this is need for support macrophone.
 ins alsa-utils pavucontrol
 # 将当前用户加入 audio 分组.
@@ -152,8 +147,7 @@ ins emacs ttf-dejavu wqy-microhei wqy-zenhei jansson
 
 ins firefox chromium flashplugin next-browser
 
-ins gnome gnome-extra gconf budgie-desktop gparted \
-    networkmanager network-manager-applet \
+ins gnome-extra gconf budgie-desktop gparted \
     konsole wireshark-qt fcitx-im fcitx-sunpinyin fcitx-configtool \
     wps-office ttf-wps-fonts \
     flameshot peek copyq albert \
