@@ -99,8 +99,9 @@ ins alsa-utils pavucontrol
 # 将当前用户加入 audio 分组.
 gpasswd -a zw963 audio
 
-ins wget rsync openssh ntp mlocate ntfs-3g git tree bind gnu-netcat tcpdump
+ins wget rsync openssh ntp mlocate ntfs-3g git tree bind gnu-netcat tcpdump at
 systemctl enable ntpdate
+systemctl enable atd
 
 # 分析磁盘 IO 的工具.
 ins sysstat iotop
@@ -146,7 +147,8 @@ libinput-gestures-setup autostart
 ins  xf86-input-keyboard xf86-input-mouse
 
 # ttf-dejavu is need for emacs support active fcitx.
-ins emacs ttf-dejavu wqy-microhei wqy-zenhei
+# jansson for better json performance for emacs 27.1
+ins emacs ttf-dejavu wqy-microhei wqy-zenhei jansson
 
 ins firefox chromium flashplugin next-browser
 
