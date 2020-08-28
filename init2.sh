@@ -20,14 +20,16 @@ timedatectl set-ntp true && ntpdate pool.ntp.org
 sed -i '1iServer = https://mirrors.tuna.tsinghua.edu.cn/archlinux/$repo/os/$arch' /etc/pacman.d/mirrorlist
 
 # wol 是 wake on line 工具
-pacstrap /mnt linux linux-headers linux-firmware base base-devel gnome \
-         budgie-desktop networkmanager network-manager-applet cmake \
-         iw wpa_supplicant dialog wireless_tools net-tools wol
+pacstrap /mnt linux linux-headers linux-firmware cmake \
+         base base-devel \
+         gnome budgie-desktop networkmanager network-manager-applet \
+         iw wpa_supplicant dialog wireless_tools \
+         net-tools wol
 
 # 添加交大的 AUR 源
 cat <<'HEREDOC' >> /mnt/etc/pacman.conf
 [archlinuxcn]
-SigLevel = Optional TrustAll
+# SigLevel = Optional TrustAll
 Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch
 # Server = https://mirrors.sjtug.sjtu.edu.cn/archlinux-cn/$arch
 HEREDOC
@@ -87,12 +89,25 @@ pacman -Fy
 ins yay
 # sudo -u zw963 yaourt -Sy
 
-ins pacman-contrib
+function install_necessory () {
+    # must update this first, othersize, may install failed due required key missing from keyring.
+    pacman -S archlinuxcn-keyring
 
-# 声卡驱动, this is need for support macrophone.
-ins alsa-utils pavucontrol
-# 将当前用户加入 audio 分组.
-gpasswd -a zw963 audio
+    ins fcitx-im fcitx-sunpinyin fcitx-configtool
+    # 声卡驱动, this is need for support macrophone.
+    ins alsa-utils pavucontrol
+    # 将当前用户加入 audio 分组.
+    gpasswd -a zw963 audio
+
+
+    # ttf-dejavu is need for emacs support active fcitx.
+    # jansson for better json performance for emacs 27.1
+    # hunspell for ispell
+    # wqy-microhei wqy-zenhei
+    ins emacs ttf-dejavu jansson hunspell hunspell-en_US wqy-microhei wqy-zenhei
+}
+
+ins pacman-contrib
 
 ins wget rsync openssh ntp mlocate ntfs-3g git tree bind gnu-netcat tcpdump at
 systemctl enable ntpdate
@@ -106,7 +121,8 @@ ins sysstat iotop
 # hp-setup -i 192.168.50.145 (192.168.50.145 is printer IP)
 # another way is to use CUPS, http://127.0.0.1:631
 
-ins cpus hplip
+# python-pyqt5 is need for hp-systray
+ins cpus hplip python-pyqt5
 systemctl enable org.cups.cupsd
 
 # mtr工具的主要作用是在于两点丢包时候的异常点排查及路径搜集，是ping和tracert的结合。
@@ -139,16 +155,12 @@ libinput-gestures-setup autostart
 # if only install synaptics, will make xmodmap broken.
 # need install xf86-input-keyboard to fix it.
 # xf86-input-mouse no reason to install, just try.
-ins  xf86-input-keyboard xf86-input-mouse
-
-# ttf-dejavu is need for emacs support active fcitx.
-# jansson for better json performance for emacs 27.1
-ins emacs ttf-dejavu wqy-microhei wqy-zenhei jansson
+ins xf86-input-keyboard xf86-input-mouse
 
 ins firefox chromium flashplugin next-browser
 
-ins gnome-extra gconf budgie-desktop gparted \
-    konsole wireshark-qt fcitx-im fcitx-sunpinyin fcitx-configtool \
+ins gnome-extra gconf gparted \
+    konsole wireshark-qt \
     wps-office ttf-wps-fonts \
     flameshot peek copyq albert \
     leafpad pamac-aur neofetch
@@ -167,8 +179,8 @@ ins okular poppler-data
 
 ins proxychains-ng redsocks
 
-# qt4 is need for bcompare.
-ins qt4
+# qt5 is need for bcompare.
+ins qt5
 
 # wine 以及浏览器支持, .NET 支持
 ins wine wine_gecko wine-mono
