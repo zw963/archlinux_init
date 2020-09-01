@@ -9,7 +9,7 @@ set -xe
 loadkeys us # 确保设定键盘为 US 布局.
 
 # 确保系统时间是准确的, 一定确保同步, 否则会造成签名错误.
-timedatectl set-ntp true && ntpdate pool.ntp.org
+timedatectl set-ntp true
 
 # 是否需要运行下面的命令, 来使用本地时钟?
 # timedatectl set-local-rtc true
@@ -20,11 +20,7 @@ timedatectl set-ntp true && ntpdate pool.ntp.org
 sed -i '1iServer = https://mirrors.tuna.tsinghua.edu.cn/archlinux/$repo/os/$arch' /etc/pacman.d/mirrorlist
 
 # wol 是 wake on line 工具
-pacstrap /mnt linux linux-headers linux-firmware cmake \
-         base base-devel \
-         gnome budgie-desktop networkmanager network-manager-applet \
-         iw wpa_supplicant dialog wireless_tools \
-         net-tools wol
+pacstrap /mnt linux linux-headers linux-firmware base base-devel nano
 
 # 添加交大的 AUR 源
 cat <<'HEREDOC' >> /mnt/etc/pacman.conf
@@ -35,7 +31,7 @@ Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch
 HEREDOC
 
 # 升级时, 忽略内核和所有 nvidia 包.
-sed -i 's/#IgnorePkg.*=/IgnorePkg = linux linux-headers linux-lts linux-lts-headers nvidia nvidia-lts nvidia-settings nvidia-utils virtualbox virtualbox-guest-iso virtualbox-guest-iso/' /mnt/etc/pacman.conf
+# sed -i 's/#IgnorePkg.*=/IgnorePkg = linux linux-headers linux-lts linux-lts-headers nvidia nvidia-lts nvidia-settings nvidia-utils virtualbox virtualbox-guest-iso virtualbox-guest-iso/' /mnt/etc/pacman.conf
 sed -i 's#\#\[multilib\]#[multilib]\nInclude = /etc/pacman.d/mirrorlist#' /mnt/etc/pacman.conf
 
 # 生成 root 分区的 fstab 信息
@@ -49,6 +45,7 @@ arch-chroot /mnt /bin/bash
 
 useradd -m zw963
 echo 'zw963 ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+# remember change password of zw963 and root.
 
 # 设定上海为当前时区, 并保存时间到主机, hwclock 会生成: /etc/adjtime
 ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && hwclock --systohc --localtime
@@ -69,52 +66,57 @@ locale-gen
 echo 'LANG=en_US.UTF-8' > /etc/locale.conf
 
 # 设定 hostname
-echo 'arch_linux' > /etc/hostname
+echo 'lg_gram' > /etc/hostname
 
 echo '127.0.0.1 localhost' >> /etc/hosts
-echo '127.0.0.1 arch_linux' >> /etc/hosts
+echo '127.0.0.1 lg_gram' >> /etc/hosts
 
-function ins () {
-    pacman -S --noconfirm "$@"
+function pacman () {
+    pacman --noconfirm "$@"
 }
 
 function yao () {
-    # sudo -u zw963 yaourt --m-arg "--skippgpcheck" -S --noconfirm "$@"
     sudo -u zw963 yay -S --noconfirm "$@";
 }
 
 pacman -Sy
 pacman -Fy
-# ins yaourt
-ins yay
-# sudo -u zw963 yaourt -Sy
+pacman -S yay
 
 function install_necessory () {
     # must update this first, othersize, may install failed due required key missing from keyring.
     pacman -S archlinuxcn-keyring
 
-    ins fcitx-im fcitx-sunpinyin fcitx-configtool
+    pacman -S fcitx-im fcitx-sunpinyin fcitx-configtool
     # 声卡驱动, this is need for support macrophone.
-    ins alsa-utils pavucontrol
+    # pavucontrol is seem like not necessory.
+    pacman -S alsa-utils
     # 将当前用户加入 audio 分组.
-    gpasswd -a zw963 audio
+    sudo gpasswd -a zw963 audio
 
+    pacman -S gnome gnome-extra budgie-desktop networkmanager network-manager-applet konsole gparted yay
 
-    # ttf-dejavu is need for emacs support active fcitx.
+    systemctl enable NetworkManager
+    systemctl enable gdm # use GDM as display manager
+    systemctl enable bluetooth
+
+    # ttf-dejavu + xorg-mkfontscale is need for emacs support active fcitx.
     # jansson for better json performance for emacs 27.1
     # hunspell for ispell
-    # wqy-microhei wqy-zenhei
-    ins emacs ttf-dejavu jansson hunspell hunspell-en_US wqy-microhei wqy-zenhei
+    pacman -S emacs ttf-dejavu xorg-mkfontscale jansson hunspell hunspell-en_US
 }
 
-ins pacman-contrib
+pacman -S pacman-contrib
 
-ins wget rsync openssh ntp mlocate ntfs-3g git tree bind gnu-netcat tcpdump at
+pacman -S wget rsync openssh ntp mlocate ntfs-3g git tree bind gnu-netcat tcpdump at \
+    iw wpa_supplicant dialog wireless_tools \
+    net-tools wol cmake
+
 systemctl enable ntpdate
 systemctl enable atd
 
 # 分析磁盘 IO 的工具.
-ins sysstat iotop
+pacman -S sysstat iotop
 
 # printer
 # settings printer with:
@@ -122,7 +124,7 @@ ins sysstat iotop
 # another way is to use CUPS, http://127.0.0.1:631
 
 # python-pyqt5 is need for hp-systray
-ins cpus hplip python-pyqt5
+pacman -S cpus hplip python-pyqt5
 systemctl enable org.cups.cupsd
 
 # mtr工具的主要作用是在于两点丢包时候的异常点排查及路径搜集，是ping和tracert的结合。
@@ -131,25 +133,25 @@ systemctl enable org.cups.cupsd
 # 由于骨干外网路径可能存在的异步路由（即数据包来回路径不一致，可能在某一方向看无明显异常点，
 # 另一方向才会显示异常）与ECMP（运营商在多根路径上做负载均衡，某一根异常导致部分IP丢包），
 # 建议提供双向 mtr。
-ins traceroute mtr
+pacman -S traceroute mtr
 
 # crontab
-ins cronie
+pacman -S cronie
 systemctl enable cronie
 
-# xorg-fonts is need for emacs active IM.(未验证, 这里没有安装)
+# xorg-fonts is need for emacs active IM.(已验证,非必须)
 # mesa-demos add glxgears command to detect display card.
-ins xorg-xprop xorg-xset xorg-xrandr mesa-demos
+pacman -S xorg-xprop xorg-xset xorg-xrandr mesa-demos
 
 # xf86-input-libinput 提供了替代 synaptics 的接口，同时在 X 和 Wayland 下可用。
 # 并且开启类似苹果的多键滑动
 # xinput 用来通过命令方式设定 libinput 参数。(类似于 synclient)
-ins xf86-input-libinput libinput-gestures xorg-xinput
+ins libinput-gestures
 usermod -a -G input input
 libinput-gestures-setup autostart
 
 # 必装，它提供了 daemon 用来检测当前键盘是否在 typing, 并关闭 touch.
-# ins xf86-input-synaptics
+# pacman -S xf86-input-synaptics
 
 # synaptics make touchpad can working.
 # if only install synaptics, will make xmodmap broken.
@@ -157,19 +159,15 @@ libinput-gestures-setup autostart
 # xf86-input-mouse no reason to install, just try.
 ins xf86-input-keyboard xf86-input-mouse
 
-ins firefox chromium flashplugin next-browser
+pacman -S firefox chromium flashplugin next-browser
 
-ins gnome-extra gconf gparted \
-    konsole wireshark-qt \
+ins gconf \
+    wireshark-qt \
     wps-office ttf-wps-fonts \
     flameshot peek copyq albert \
     leafpad pamac-aur neofetch
 
 ins skype telegram-desktop
-
-systemctl enable NetworkManager
-systemctl enable gdm # use GDM as display manager
-systemctl enable bluetooth
 
 # use xorg
 sed -r -i -e "s/#(WaylandEnable=false)/\1/" /etc/gdm/custom.conf
@@ -200,7 +198,6 @@ yao deepin-wine-wechat
 yao deepin-baidu-pan
 
 # following package need be install manually after reboot.
-
 ins lutris lib32-vulkan-intel vulkan-intel lib32-vulkan-intel vulkan-icd-loader lib32-vulkan-icd-loader
 
 # ins steam steam-native-runtime
