@@ -75,17 +75,22 @@ function pacman () {
     pacman --noconfirm "$@"
 }
 
-function yao () {
-    sudo -u zw963 yay -S --noconfirm "$@";
+function yay () {
+    yay --noconfirm "$@";
 }
 
-pacman -Sy
-pacman -Fy
-pacman -S yay
-
 function install_necessory () {
+    pacman -Sy
+    pacman -Fy
+
+    # pacman -S pacman-contrib
+
     # must update this first, othersize, may install failed due required key missing from keyring.
     pacman -S archlinuxcn-keyring
+
+    pacman -S yay
+
+    pacman -S rsync wget net-tools man netcat
 
     pacman -S fcitx-im fcitx-sunpinyin fcitx-configtool
     # 声卡驱动, this is need for support macrophone.
@@ -106,11 +111,22 @@ function install_necessory () {
     pacman -S emacs ttf-dejavu xorg-mkfontscale jansson hunspell hunspell-en_US
 }
 
-pacman -S pacman-contrib
+function init_programming () {
+    # js
+    pacman -S nodejs npm yarn
 
-pacman -S wget rsync openssh ntp mlocate ntfs-3g git tree bind gnu-netcat tcpdump at \
+    # mysql, 或者 mysql-clients (archlinuxcn)
+    pacman -S mariadb-clients
+
+    # pg not split to server and client.
+    pacman -S postgresql
+
+    pacman -S libfaketime
+}
+
+pacman -S ntp mlocate ntfs-3g git tree bind tcpdump at \
     iw wpa_supplicant dialog wireless_tools \
-    net-tools wol cmake
+     wol cmake
 
 systemctl enable ntpdate
 systemctl enable atd
@@ -146,7 +162,7 @@ pacman -S xorg-xprop xorg-xset xorg-xrandr mesa-demos
 # xf86-input-libinput 提供了替代 synaptics 的接口，同时在 X 和 Wayland 下可用。
 # 并且开启类似苹果的多键滑动
 # xinput 用来通过命令方式设定 libinput 参数。(类似于 synclient)
-ins libinput-gestures
+pacman -S libinput-gestures
 usermod -a -G input input
 libinput-gestures-setup autostart
 
@@ -157,58 +173,58 @@ libinput-gestures-setup autostart
 # if only install synaptics, will make xmodmap broken.
 # need install xf86-input-keyboard to fix it.
 # xf86-input-mouse no reason to install, just try.
-ins xf86-input-keyboard xf86-input-mouse
+pacman -S xf86-input-keyboard xf86-input-mouse
 
 pacman -S firefox chromium flashplugin next-browser
 
-ins gconf \
+pacman -S gconf \
     wireshark-qt \
     wps-office ttf-wps-fonts \
     flameshot peek copyq albert \
     leafpad pamac-aur neofetch
 
-ins skype telegram-desktop
+pacman -S skype telegram-desktop
 
 # use xorg
 sed -r -i -e "s/#(WaylandEnable=false)/\1/" /etc/gdm/custom.conf
 
 # poppler-data needed for pdf show chinese chars.
-ins okular poppler-data
+pacman -S okular poppler-data
 
-ins proxychains-ng redsocks
+pacman -S proxychains-ng redsocks
 
 # qt5 is need for bcompare.
-ins qt5
+pacman -S qt5
 
 # wine 以及浏览器支持, .NET 支持
-ins wine wine_gecko wine-mono
+pacman -S wine wine_gecko wine-mono
 
 # image tools
-ins gimp imagemagick
+pacman -S gimp imagemagick
 
 # library
-ins llvm jdk8-openjdk nodejs npm yarn postgresql
+pacman -S llvm jdk8-openjdk nodejs npm yarn postgresql
 
 # 安装多媒体相关的解码库及 H.264 解码支持
-yao ffmpeg vlc gst-libav
+yay -S ffmpeg vlc gst-libav
 
-yao deepin.com.qq.office
-yao deepin.com.thunderspeed
-yao deepin-wine-wechat
-yao deepin-baidu-pan
+yay -S deepin.com.qq.office
+yay -S deepin.com.thunderspeed
+yay -S deepin-wine-wechat
+yay -S deepin-baidu-pan
 
 # following package need be install manually after reboot.
-ins lutris lib32-vulkan-intel vulkan-intel lib32-vulkan-intel vulkan-icd-loader lib32-vulkan-icd-loader
+pacman -S lutris lib32-vulkan-intel vulkan-intel lib32-vulkan-intel vulkan-icd-loader lib32-vulkan-icd-loader
 
-# ins steam steam-native-runtime
+# pacman -S steam steam-native-runtime
 
 # # nvidia tools
-# ins nvidia nvidia-settings nvidia-utils lib32-nvidia-utils
+# pacman -S nvidia nvidia-settings nvidia-utils lib32-nvidia-utils
 
-ins virtualbox virtualbox-guest-iso virtualbox-host-modules-arch
-yao virtualbox-ext-oracle
+pacman -S virtualbox virtualbox-guest-iso virtualbox-host-modules-arch
+yay -S virtualbox-ext-oracle
 
-yao vmware-workstation
+yay -S vmware-workstation
 
 # VMWARE 网络访问
 systemctl enable vmware-networks.service
@@ -221,8 +237,8 @@ for x in {0..6}; do mkdir -p /etc/init.d/rc${x}.d; done
 
 
 # # if use linux kernel(non lts), must use virtualbox-host-modules-arch
-# ins virtualbox-host-modules-arch
-# ins virtualbox virtualbox-guest-iso
+# pacman -S virtualbox-host-modules-arch
+# pacman -S virtualbox virtualbox-guest-iso
 # gpasswd -a zw963 vboxusers
 # sudo modprobe vboxdrv
 # virtualbox_version=$(pacman -Qi virtualbox |grep 'Version' |awk -F: '{print $2}'|grep -o '[0-9]*\.[0-9]*\.[0-9]')
