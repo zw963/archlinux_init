@@ -99,7 +99,10 @@ function install_necessory () {
     # 将当前用户加入 audio 分组.
     sudo gpasswd -a zw963 audio
 
-    pacman -S gnome gnome-extra budgie-desktop networkmanager network-manager-applet konsole gparted yay
+    pacman -S gnome gnome-extra gnome-shell-extension-appindicator \
+           networkmanager network-manager-applet \
+           konsole gparted yay
+
 
     systemctl enable NetworkManager
     systemctl enable gdm # use GDM as display manager
@@ -185,6 +188,8 @@ pacman -S gconf \
 
 pacman -S skype telegram-desktop
 
+# 安装 tws, 如果没有声音，安装下面的包。
+
 # use xorg
 sed -r -i -e "s/#(WaylandEnable=false)/\1/" /etc/gdm/custom.conf
 
@@ -223,6 +228,8 @@ pacman -S lutris lib32-vulkan-intel vulkan-intel lib32-vulkan-intel vulkan-icd-l
 
 pacman -S virtualbox virtualbox-guest-iso virtualbox-host-modules-arch
 yay -S virtualbox-ext-oracle
+sudo gpasswd -a zw963 vboxusers
+sudo modprobe vboxdrv
 
 yay -S vmware-workstation
 
@@ -235,12 +242,8 @@ systemctl enable vmware-hostd.service
 # 创建一些必须的空目录, (安装 vmware 客户端工具必须)
 for x in {0..6}; do mkdir -p /etc/init.d/rc${x}.d; done
 
-
 # # if use linux kernel(non lts), must use virtualbox-host-modules-arch
 # pacman -S virtualbox-host-modules-arch
-# pacman -S virtualbox virtualbox-guest-iso
-# gpasswd -a zw963 vboxusers
-# sudo modprobe vboxdrv
 # virtualbox_version=$(pacman -Qi virtualbox |grep 'Version' |awk -F: '{print $2}'|grep -o '[0-9]*\.[0-9]*\.[0-9]')
 # wget https://download.virtualbox.org/virtualbox/6.0.8/Oracle_VM_VirtualBox_Extension_Pack-${virtualbox_version}.vbox-extpack -P ~/Downloads/
 # pci=nommconf
