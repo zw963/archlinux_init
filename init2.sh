@@ -79,7 +79,7 @@ function yay () {
     yay --noconfirm "$@";
 }
 
-function install_necessory () {
+function init_necessory () {
     pacman -Sy
     pacman -Fy
 
@@ -90,7 +90,9 @@ function install_necessory () {
 
     pacman -S yay
 
-    pacman -S rsync wget net-tools man netcat
+    pacman -S rsync wget net-tools man netcat cronie
+
+    systemctl enable cronie
 
     pacman -S fcitx-im fcitx-sunpinyin fcitx-configtool
     # 声卡驱动, this is need for support macrophone.
@@ -101,8 +103,7 @@ function install_necessory () {
 
     pacman -S gnome gnome-extra gnome-shell-extension-appindicator \
            networkmanager network-manager-applet \
-           konsole gparted yay
-
+           konsole okular gparted yay
 
     systemctl enable NetworkManager
     systemctl enable gdm # use GDM as display manager
@@ -112,6 +113,10 @@ function install_necessory () {
     # jansson for better json performance for emacs 27.1
     # hunspell for ispell
     pacman -S emacs ttf-dejavu xorg-mkfontscale jansson hunspell hunspell-en_US
+}
+
+function init_tools () {
+    pacman -S mlocate
 }
 
 function init_programming () {
@@ -154,10 +159,6 @@ systemctl enable org.cups.cupsd
 # 建议提供双向 mtr。
 pacman -S traceroute mtr
 
-# crontab
-pacman -S cronie
-systemctl enable cronie
-
 # xorg-fonts is need for emacs active IM.(已验证,非必须)
 # mesa-demos add glxgears command to detect display card.
 pacman -S xorg-xprop xorg-xset xorg-xrandr mesa-demos
@@ -194,7 +195,7 @@ pacman -S skype telegram-desktop
 sed -r -i -e "s/#(WaylandEnable=false)/\1/" /etc/gdm/custom.conf
 
 # poppler-data needed for pdf show chinese chars.
-pacman -S okular poppler-data
+pacman -S poppler-data
 
 pacman -S proxychains-ng redsocks
 
