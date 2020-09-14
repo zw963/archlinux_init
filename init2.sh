@@ -112,11 +112,21 @@ function init_necessory () {
     # ttf-dejavu + xorg-mkfontscale is need for emacs support active fcitx.
     # jansson for better json performance for emacs 27.1
     # hunspell for ispell
-    pacman -S emacs ttf-dejavu xorg-mkfontscale jansson hunspell hunspell-en_US
+    # paps for emacs to use lpr(new_lpr) print chinese character.
+    pacman -S emacs ttf-dejavu xorg-mkfontscale jansson hunspell hunspell-en_US paps
 }
 
 function init_tools () {
     pacman -S mlocate
+
+    # pdf-printer need setup from http://127.0.0.1:631/admin
+    pacman -S cups cups-pdf
+
+    systemctl enable org.cups.cupsd
+
+    # python-pyqt5 is need for hp-systray
+    # 安装后, 运行 hp-setup -i 192.168.51.145, 来初始化打印机
+    pacman -S hplip python-pyqt5
 }
 
 function init_programming () {
@@ -133,8 +143,8 @@ function init_programming () {
 }
 
 pacman -S ntp mlocate ntfs-3g git tree bind tcpdump at \
-    iw wpa_supplicant dialog wireless_tools \
-     wol cmake
+       iw wpa_supplicant dialog wireless_tools \
+       wol cmake
 
 systemctl enable ntpdate
 systemctl enable atd
@@ -146,10 +156,6 @@ pacman -S sysstat iotop
 # settings printer with:
 # hp-setup -i 192.168.50.145 (192.168.50.145 is printer IP)
 # another way is to use CUPS, http://127.0.0.1:631
-
-# python-pyqt5 is need for hp-systray
-pacman -S cpus hplip python-pyqt5
-systemctl enable org.cups.cupsd
 
 # mtr工具的主要作用是在于两点丢包时候的异常点排查及路径搜集，是ping和tracert的结合。
 # 相比于ping它会有路由节点的展示，而相对于tracert它会展示中间路由节点的丢包情况，
@@ -182,10 +188,10 @@ pacman -S xf86-input-keyboard xf86-input-mouse
 pacman -S firefox chromium flashplugin next-browser
 
 pacman -S gconf \
-    wireshark-qt \
-    wps-office ttf-wps-fonts \
-    flameshot peek copyq albert \
-    leafpad pamac-aur neofetch
+       wireshark-qt \
+       wps-office ttf-wps-fonts \
+       flameshot peek copyq albert \
+       leafpad pamac-aur neofetch
 
 pacman -S skype telegram-desktop
 
