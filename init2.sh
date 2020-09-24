@@ -88,22 +88,31 @@ function init_necessory () {
     # must update this first, othersize, may install failed due required key missing from keyring.
     pacman -S archlinuxcn-keyring
 
-    pacman -S yay
+    pacman -S yay # install git too.
 
-    pacman -S rsync wget net-tools man netcat cronie
+    pacman -S rsync wget net-tools man netcat cronie mlocate
 
     systemctl enable cronie
 
     pacman -S fcitx-im fcitx-sunpinyin fcitx-configtool
     # 声卡驱动, this is need for support macrophone.
     # pavucontrol is seem like not necessory.
+
+    # 如果你希望OSS应用和dmix一起工作，也安装alsa-oss。然后载入snd-seq-oss， snd-pcm-oss 和 snd-mixer-oss 核心模块 来激活OSS模仿。
+    # modprobe snd-seq-oss snd-pcm-oss snd-mixer-oss
+
+    # 是不是要安装这个? pulseaudio-alsa
     pacman -S alsa-utils
     # 将当前用户加入 audio 分组.
     sudo gpasswd -a zw963 audio
 
+    # install google-chrome will install xdg-utils too.
     pacman -S gnome gnome-extra gnome-shell-extension-appindicator \
            networkmanager network-manager-applet \
-           konsole okular gparted yay
+           konsole okular gparted yay copyq flameshot albert \
+           firefox google-chrome flashplugin \
+           skype telegram-desktop \
+           wps-office ttf-wps-fonts
 
     systemctl enable NetworkManager
     systemctl enable gdm # use GDM as display manager
@@ -114,11 +123,14 @@ function init_necessory () {
     # hunspell for ispell
     # paps for emacs to use lpr(new_lpr) print chinese character.
     pacman -S emacs ttf-dejavu xorg-mkfontscale jansson hunspell hunspell-en_US paps
+
+    pacman -S virtualbox virtualbox-guest-iso virtualbox-host-modules-arch
+    yay -S virtualbox-ext-oracle
+    sudo gpasswd -a zw963 vboxusers
+    sudo modprobe vboxdrv
 }
 
 function init_tools () {
-    pacman -S mlocate
-
     # pdf-printer need setup from http://127.0.0.1:631/admin
     pacman -S cups cups-pdf
 
@@ -127,6 +139,18 @@ function init_tools () {
     # python-pyqt5 is need for hp-systray
     # 安装后, 运行 hp-setup -i 192.168.51.145, 来初始化打印机
     pacman -S hplip python-pyqt5
+
+    # 百度网盘, 网易云音乐.
+    pacman -S baidunetdisk-bin netease-cloud-music
+
+    # 如果安装 plasma, deepin-wine 移植的一些 package 无法工作.
+    # pacman install xsettingsd, 然后在 ~/.config/autostart/../
+    # 中启动它, 再尝试。
+
+
+    This problem will be solved after re-login or reboot.
+
+    yay -S deepin-wine-wechat
 }
 
 function init_programming () {
@@ -140,14 +164,27 @@ function init_programming () {
     pacman -S postgresql
 
     pacman -S libfaketime
+
+    # library
+    pacman -S jdk8-openjdk
 }
 
-pacman -S ntp mlocate ntfs-3g git tree bind tcpdump at \
+function init_optinal () {
+    pacman -S tree at
+
+    systemctl enable atd
+
+    pacman -S steam steam-native-runtime
+
+    pacman -S mesa-demos xf86-video-intel
+}
+
+pacman -S ntp ntfs-3g bind tcpdump \
        iw wpa_supplicant dialog wireless_tools \
        wol cmake
 
 systemctl enable ntpdate
-systemctl enable atd
+
 
 # 分析磁盘 IO 的工具.
 pacman -S sysstat iotop
@@ -167,7 +204,7 @@ pacman -S traceroute mtr
 
 # xorg-fonts is need for emacs active IM.(已验证,非必须)
 # mesa-demos add glxgears command to detect display card.
-pacman -S xorg-xprop xorg-xset xorg-xrandr mesa-demos
+pacman -S xorg-xprop xorg-xset xorg-xrandr
 
 # xf86-input-libinput 提供了替代 synaptics 的接口，同时在 X 和 Wayland 下可用。
 # 并且开启类似苹果的多键滑动
@@ -179,26 +216,14 @@ libinput-gestures-setup autostart
 # 必装，它提供了 daemon 用来检测当前键盘是否在 typing, 并关闭 touch.
 # pacman -S xf86-input-synaptics
 
-# synaptics make touchpad can working.
-# if only install synaptics, will make xmodmap broken.
-# need install xf86-input-keyboard to fix it.
-# xf86-input-mouse no reason to install, just try.
-pacman -S xf86-input-keyboard xf86-input-mouse
-
-pacman -S firefox chromium flashplugin next-browser
+pacman -S next-browser
 
 pacman -S gconf \
        wireshark-qt \
-       wps-office ttf-wps-fonts \
-       flameshot peek copyq albert \
+        peek  \
        leafpad pamac-aur neofetch
 
-pacman -S skype telegram-desktop
-
 # 安装 tws, 如果没有声音，安装下面的包。
-
-# use xorg
-sed -r -i -e "s/#(WaylandEnable=false)/\1/" /etc/gdm/custom.conf
 
 # poppler-data needed for pdf show chinese chars.
 pacman -S poppler-data
@@ -214,29 +239,17 @@ pacman -S wine wine_gecko wine-mono
 # image tools
 pacman -S gimp imagemagick
 
-# library
-pacman -S llvm jdk8-openjdk nodejs npm yarn postgresql
-
 # 安装多媒体相关的解码库及 H.264 解码支持
 yay -S ffmpeg vlc gst-libav
 
 yay -S deepin.com.qq.office
 yay -S deepin.com.thunderspeed
-yay -S deepin-wine-wechat
-yay -S deepin-baidu-pan
 
 # following package need be install manually after reboot.
 pacman -S lutris lib32-vulkan-intel vulkan-intel lib32-vulkan-intel vulkan-icd-loader lib32-vulkan-icd-loader
 
-# pacman -S steam steam-native-runtime
-
 # # nvidia tools
 # pacman -S nvidia nvidia-settings nvidia-utils lib32-nvidia-utils
-
-pacman -S virtualbox virtualbox-guest-iso virtualbox-host-modules-arch
-yay -S virtualbox-ext-oracle
-sudo gpasswd -a zw963 vboxusers
-sudo modprobe vboxdrv
 
 yay -S vmware-workstation
 
