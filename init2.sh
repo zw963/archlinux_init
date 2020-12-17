@@ -11,6 +11,9 @@ loadkeys us # 确保设定键盘为 US 布局.
 # 确保系统时间是准确的, 一定确保同步, 否则会造成签名错误.
 timedatectl set-ntp true
 
+# Windows 认为硬件时间是当地时间，而 Linux 认为硬件时间是 UTC+0 标准时间，这就很尴尬了。
+# 通过  timedatectl set-local-rtc true  让 Linux 认为硬件时间是当地时间。
+
 # 是否需要运行下面的命令, 来使用本地时钟?
 # timedatectl set-local-rtc true
 
@@ -109,10 +112,16 @@ function init_necessory () {
     # install google-chrome will install xdg-utils too.
     pacman -S gnome gnome-extra gnome-shell-extension-appindicator \
            networkmanager network-manager-applet \
-           konsole okular gparted yay copyq flameshot albert \
+           konsole gparted yay copyq flameshot albert \
            firefox google-chrome flashplugin \
            skype telegram-desktop \
            wps-office ttf-wps-fonts
+
+    # poppler-data needed for okular pdf show chinese chars.
+    # 否则，可能显示内容是乱码。
+    pacman -S okular poppler-data
+
+    yay -S create_ap
 
     systemctl enable NetworkManager
     systemctl enable gdm # use GDM as display manager
@@ -134,7 +143,7 @@ function init_tools () {
     # pdf-printer need setup from http://127.0.0.1:631/admin
     pacman -S cups cups-pdf
 
-    systemctl enable org.cups.cupsd
+    systemctl enable cups
 
     # python-pyqt5 is need for hp-systray
     # 安装后, 运行 hp-setup -i 192.168.51.145, 来初始化打印机
@@ -150,7 +159,7 @@ function init_tools () {
 
     This problem will be solved after re-login or reboot.
 
-    yay -S deepin-wine-wechat
+    yay -S deepin-wine-wechat deepin-wine-qq
 }
 
 function init_programming () {
@@ -166,7 +175,7 @@ function init_programming () {
     pacman -S libfaketime
 
     # library
-    pacman -S jdk8-openjdk
+    pacman -S java-runtime-headless
 }
 
 function init_optinal () {
@@ -177,6 +186,10 @@ function init_optinal () {
     pacman -S steam steam-native-runtime
 
     pacman -S mesa-demos xf86-video-intel
+
+    # 临时关闭： sudo laptop_mode stop
+    yay -S laptop-mode-tools
+
 }
 
 pacman -S ntp ntfs-3g bind tcpdump \
@@ -218,15 +231,10 @@ libinput-gestures-setup autostart
 
 pacman -S next-browser
 
-pacman -S gconf \
-       wireshark-qt \
-        peek  \
+pacman -S gconf wireshark-qt peek \
        leafpad pamac-aur neofetch
 
 # 安装 tws, 如果没有声音，安装下面的包。
-
-# poppler-data needed for pdf show chinese chars.
-pacman -S poppler-data
 
 pacman -S proxychains-ng redsocks
 
