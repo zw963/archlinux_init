@@ -159,6 +159,9 @@ function init_tools () {
 
     This problem will be solved after re-login or reboot.
 
+    # 需要安装微软雅黑来解决输入时，没有字体的问题。
+    tar xvf WeiRuanYaHei-1.zst
+    # cp WeiRuanYaHei-1.ttf ~/.deepinwine/Deepin-WeChat/drive_c/windows/Fonts/
     yay -S deepin-wine-wechat deepin-wine-qq
 }
 
