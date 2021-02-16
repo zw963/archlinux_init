@@ -123,6 +123,10 @@ function init_necessory () {
 
     yay -S create_ap
 
+    pacman -S samba
+    yay -S wsdd2
+    systemctl enable smb nmb wsdd2
+
     systemctl enable NetworkManager
     systemctl enable gdm # use GDM as display manager
     systemctl enable bluetooth
