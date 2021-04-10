@@ -123,9 +123,11 @@ function init_necessory () {
 
     yay -S create_ap
 
+    yay -S xnviewmp             # ACDSee like picture viewer
+
     pacman -S samba
-    yay -S wsdd2
-    systemctl enable smb nmb wsdd2
+    yay -S wsdd2                # Support Win 10 to see current samba driver.
+systemctl restart smb nmb    systemctl enable smb nmb wsdd2
 
     systemctl enable NetworkManager
     systemctl enable gdm # use GDM as display manager
