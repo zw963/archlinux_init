@@ -117,6 +117,9 @@ function init_necessory () {
            skype telegram-desktop \
            wps-office ttf-wps-fonts
 
+    # gnome 自带的浏览器不要。
+    pacman -R epiphany
+
     # poppler-data needed for okular pdf show chinese chars.
     # 否则，可能显示内容是乱码。
     pacman -S okular poppler-data
@@ -232,14 +235,14 @@ pacman -S xorg-xprop xorg-xset xorg-xrandr
 # xf86-input-libinput 提供了替代 synaptics 的接口，同时在 X 和 Wayland 下可用。
 # 并且开启类似苹果的多键滑动
 # xinput 用来通过命令方式设定 libinput 参数。(类似于 synclient)
-pacman -S libinput-gestures
-usermod -a -G input input
-libinput-gestures-setup autostart
+# pacman -S libinput-gestures
+# usermod -a -G input input
+# libinput-gestures-setup autostart
 
 # 必装，它提供了 daemon 用来检测当前键盘是否在 typing, 并关闭 touch.
 # pacman -S xf86-input-synaptics
 
-pacman -S next-browser
+# pacman -S next-browser
 
 pacman -S gconf wireshark-qt peek \
        leafpad pamac-aur neofetch
