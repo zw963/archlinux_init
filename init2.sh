@@ -97,7 +97,9 @@ function init_necessory () {
 
     systemctl enable cronie
 
-    pacman -S fcitx-im fcitx-sunpinyin fcitx-configtool
+    # pacman -S fcitx-im fcitx-sunpinyin fcitx-configtool
+    pacman -S fcitx5-chinese-addons fcitx5-pinyin-zhwiki
+
     # 声卡驱动, this is need for support macrophone.
     # pavucontrol is seem like not necessory.
 
@@ -109,15 +111,16 @@ function init_necessory () {
     # 将当前用户加入 audio 分组.
     sudo gpasswd -a zw963 audio
 
+    # gnome-extra gnome-shell-extension-appindicator
     # install google-chrome will install xdg-utils too.
-    pacman -S gnome gnome-extra gnome-shell-extension-appindicator \
+    pacman -S gnome  \
            networkmanager network-manager-applet \
            konsole gparted yay copyq flameshot albert \
            firefox google-chrome flashplugin \
            skype telegram-desktop \
            wps-office ttf-wps-fonts
 
-    # gnome 自带的浏览器不要。
+    # 删除 gnome 自带的浏览器.
     pacman -R epiphany
 
     # poppler-data needed for okular pdf show chinese chars.
@@ -172,7 +175,9 @@ function init_tools () {
     # tar xvf WeiRuanYaHei-1.zst
     # cp WeiRuanYaHei-1.ttf ~/.deepinwine/Deepin-WeChat/drive_c/windows/Fonts/
     # rm -f WeiRuanYaHei-1.ttf
-    yay -S deepin-wine-wechat deepin-wine-qq
+    # yay -S deepin-wine-wechat deepin-wine-qq
+
+    pacman -S wine-for-wechat wine-wechat
 }
 
 function init_programming () {
@@ -248,7 +253,6 @@ pacman -S gconf wireshark-qt peek \
        leafpad pamac-aur neofetch
 
 # 安装 tws, 如果没有声音，安装下面的包。
-
 pacman -S proxychains-ng redsocks
 
 # qt5 is need for bcompare.
@@ -265,6 +269,7 @@ yay -S ffmpeg vlc gst-libav
 
 yay -S deepin.com.qq.office
 yay -S deepin.com.thunderspeed
+
 
 # following package need be install manually after reboot.
 pacman -S lutris lib32-vulkan-intel vulkan-intel lib32-vulkan-intel vulkan-icd-loader lib32-vulkan-icd-loader
