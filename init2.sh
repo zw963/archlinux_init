@@ -168,8 +168,11 @@ function init_tools () {
     # pacman install xsettingsd, 然后在 ~/.config/autostart/../
     # 中启动它, 再尝试。
 
+    # 视频编辑
+    pacman -S kdenline
 
-    This problem will be solved after re-login or reboot.
+
+    # This problem will be solved after re-login or reboot.
 
     # 需要安装微软雅黑来解决输入时，没有字体的问题。
     # tar xvf WeiRuanYaHei-1.zst
