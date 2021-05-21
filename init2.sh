@@ -113,7 +113,7 @@ function init_necessory () {
 
     # gnome-extra gnome-shell-extension-appindicator
     # install google-chrome will install xdg-utils too.
-    pacman -S gnome  \
+    pacman -S gnome gnome-tweaks gnome-usage  \
            networkmanager network-manager-applet \
            konsole gparted yay copyq flameshot albert \
            firefox google-chrome flashplugin \
