@@ -6,10 +6,20 @@ set -xe
 # 1. 网络已经配置好. (不配置好, 没办法使用 curl 从 github 下载这个文件.)
 # 2. 已经分区(cfidsk)并格式化(mkfs.ext4 /dev/sda1), 并且成功的 mount 这个分区到 /mnt (mount /dev/sda1 /mnt)
 
-loadkeys us # 确保设定键盘为 US 布局.
+# 初始化的步骤：
+
+# loadkeys us # 确保设定键盘为 US 布局.
+# ip link # 确保可以正确显示当前的网卡，否则可能续需要 ip link set dev wls1 up 来启动这个 interface
+# 启动 iwctl, 然后根据补全，键入下面的命令： station TABwlan0 connect TABwifi
 
 # 确保系统时间是准确的, 一定确保同步, 否则会造成签名错误.
 timedatectl set-ntp true
+
+# 如需分区，使用 fdisk
+# - fdisk -l 检查所有分区
+# - fdisk /dev/the_disk_to_be_partitioned, 操作该分区
+# - mkfs.ext4 /dev/root_partition 格式化该分区。
+# - mount /dev/root_partition /mnt 加载该分区
 
 # Windows 认为硬件时间是当地时间，而 Linux 认为硬件时间是 UTC+0 标准时间，这就很尴尬了。
 # 通过  timedatectl set-local-rtc true  让 Linux 认为硬件时间是当地时间。
@@ -20,17 +30,16 @@ timedatectl set-ntp true
 # 设定上海交大源为首选源, 速度更快
 # sed -i '1iServer = http://ftp.sjtu.edu.cn/archlinux/$repo/os/$arch' /etc/pacman.d/mirrorlist
 # 如果是北方网通, 清华源更快
-sed -i '1iServer = https://mirrors.tuna.tsinghua.edu.cn/archlinux/$repo/os/$arch' /etc/pacman.d/mirrorlist
+sed -i '1iServer = Server = https://mirrors.bfsu.edu.cn/archlinux/$repo/os/$arch' /etc/pacman.d/mirrorlist
 
 # wol 是 wake on line 工具
-pacstrap /mnt linux linux-headers linux-firmware base base-devel nano
+pacstrap /mnt base base-devel linux linux-headers linux-firmware nano
 
 # 添加交大的 AUR 源
 cat <<'HEREDOC' >> /mnt/etc/pacman.conf
 [archlinuxcn]
 # SigLevel = Optional TrustAll
-Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch
-# Server = https://mirrors.sjtug.sjtu.edu.cn/archlinux-cn/$arch
+Server = https://mirrors.bfsu.edu.cn/archlinuxcn/$arch
 HEREDOC
 
 # 升级时, 忽略内核和所有 nvidia 包.
