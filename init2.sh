@@ -20,6 +20,7 @@ timedatectl set-ntp true
 # - fdisk /dev/the_disk_to_be_partitioned, 操作该分区
 # - mkfs.ext4 /dev/root_partition 格式化该分区。
 # - mount /dev/root_partition /mnt 加载该分区
+# - 如果你的 boot 启动参数依赖于 label, 需要通过
 
 # Windows 认为硬件时间是当地时间，而 Linux 认为硬件时间是 UTC+0 标准时间，这就很尴尬了。
 # 通过  timedatectl set-local-rtc true  让 Linux 认为硬件时间是当地时间。
@@ -102,9 +103,11 @@ function init_necessory () {
 
     pacman -S yay # install git too.
 
-    pacman -S rsync wget net-tools man netcat cronie mlocate
+    pacman -S rsync wget net-tools man netcat cronie mlocate iwd dhcpcd
 
     systemctl enable cronie
+    systemctl enable iwd
+    systemctl enable dhcpcd
 
     # pacman -S fcitx-im fcitx-sunpinyin fcitx-configtool
     pacman -S fcitx5-chinese-addons fcitx5-pinyin-zhwiki
@@ -122,7 +125,7 @@ function init_necessory () {
 
     # gnome-extra gnome-shell-extension-appindicator
     # install google-chrome will install xdg-utils too.
-    pacman -S gnome gnome-tweaks dconf-editor gnome-usage  \
+    pacman -S gnome gnome-tweaks dconf-editor gnome-usage chrome-gnome-shell \
            networkmanager network-manager-applet \
            konsole gparted yay copyq flameshot albert \
            firefox google-chrome flashplugin \
