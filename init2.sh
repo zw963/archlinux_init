@@ -125,17 +125,25 @@ function init_necessory () {
     # 将当前用户加入 audio 分组.
     sudo gpasswd -a zw963 audio
 
-    # 安装多媒体相关的解码库及 H.264 解码支持
-    pacman -S gnome gnome-tweaks dconf-editor gnome-usage chrome-gnome-shell \
-           networkmanager network-manager-applet \
-           konsole gparted yay copyq flameshot  \
-           firefox google-chrome \
-           vlc ffmpeg gst-libav \
-           fcitx-im fcitx-sunpinyin fcitx-configtool
-
+    pacman -S gnome gnome-tweaks dconf-editor networkmanager network-manager-applet konsole
     systemctl enable NetworkManager
     systemctl enable gdm # use GDM as display manager
     systemctl enable bluetooth
+
+    # ttf-dejavu + xorg-mkfontscale is need for emacs support active fcitx.
+    # jansson for better json performance for emacs 27.1
+    pacman -S emacs ttf-dejavu xorg-mkfontscale jansson
+    # hunspell for ispell
+    pacman -S hunspell hunspell-en_US
+    # paps for emacs to use lpr(new_lpr) print chinese character.
+    yay -S paps
+
+    # 安装多媒体相关的解码库及 H.264 解码支持
+    pacman -S gnome-usage chrome-gnome-shell \
+            gparted yay copyq flameshot  \
+           firefox google-chrome \
+           vlc ffmpeg gst-libav \
+           fcitx-im fcitx-sunpinyin fcitx-configtool
 
     # gnome-extra gnome-shell-extension-appindicator
     # install google-chrome will install xdg-utils too.
@@ -161,12 +169,6 @@ function init_necessory () {
     pacman -S samba
     yay -S wsdd2                # Support Win 10 to see current samba driver.
     systemctl restart smb nmb    systemctl enable smb nmb wsdd2
-
-    # ttf-dejavu + xorg-mkfontscale is need for emacs support active fcitx.
-    # jansson for better json performance for emacs 27.1
-    # hunspell for ispell
-    # paps for emacs to use lpr(new_lpr) print chinese character.
-    pacman -S emacs ttf-dejavu xorg-mkfontscale jansson hunspell hunspell-en_US paps
 
     pacman -S virtualbox virtualbox-guest-iso virtualbox-host-modules-arch virtualbox-ext-oracle
 
