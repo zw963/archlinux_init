@@ -100,35 +100,27 @@ function init_necessory () {
     pacman -S yay # install git too.
 
     pacman -S rsync wget net-tools man netcat cronie mlocate iwd dhcpcd ntp ntfs-3g bind exfat-utils
-
-    # following package not need when install from arch ISO, only need iwd dhcpcd was enough.
-    # pacman -S iw wpa_supplicant dialog wireless_tools
-
     systemctl enable ntpdate
-
     systemctl enable cronie
     systemctl enable iwd
     systemctl enable dhcpcd
 
-    pacman -S tcpdump wol cmake
+    pacman -S alsa-utils
+    # 将当前用户加入 audio 分组.
+    sudo gpasswd -a zw963 audio
 
-    # pacman -S fcitx5-chinese-addons fcitx5-pinyin-zhwiki
-
-    # 声卡驱动, this is need for support macrophone.
     # pavucontrol is seem like not necessory.
 
     # 如果你希望OSS应用和dmix一起工作，也安装alsa-oss。然后载入snd-seq-oss， snd-pcm-oss 和 snd-mixer-oss 核心模块 来激活OSS模仿。
     # modprobe snd-seq-oss snd-pcm-oss snd-mixer-oss
 
-    # 是不是要安装这个? pulseaudio-alsa
-    pacman -S alsa-utils
-    # 将当前用户加入 audio 分组.
-    sudo gpasswd -a zw963 audio
-
-    pacman -S gnome gnome-tweaks dconf-editor networkmanager network-manager-applet konsole
+    pacman -S gnome gnome-tweaks dconf-editor networkmanager network-manager-applet konsole firefox google-chrome gparted copyq flameshot
     systemctl enable NetworkManager
     systemctl enable gdm # use GDM as display manager
     systemctl enable bluetooth
+
+    pacman -S fcitx-im fcitx-sunpinyin fcitx-configtool
+    pacman -S fcitx5-chinese-addons fcitx5-pinyin-zhwiki
 
     # ttf-dejavu + xorg-mkfontscale is need for emacs support active fcitx.
     # jansson for better json performance for emacs 27.1
@@ -139,11 +131,13 @@ function init_necessory () {
     yay -S paps
 
     # 安装多媒体相关的解码库及 H.264 解码支持
-    pacman -S gnome-usage chrome-gnome-shell \
-            gparted yay copyq flameshot  \
-           firefox google-chrome \
-           vlc ffmpeg gst-libav \
-           fcitx-im fcitx-sunpinyin fcitx-configtool
+    pacman -S vlc ffmpeg gst-libav
+
+    # poppler-data needed for okular pdf show chinese chars.
+    # 否则，可能显示内容是乱码。
+    pacman -S okular phonon-qt5-vlc poppler-data
+
+    pacman -S gnome-usage chrome-gnome-shell
 
     # gnome-extra gnome-shell-extension-appindicator
     # install google-chrome will install xdg-utils too.
@@ -158,10 +152,6 @@ function init_necessory () {
     # 删除 gnome 自带的浏览器.
     pacman -R epiphany
 
-    # poppler-data needed for okular pdf show chinese chars.
-    # 否则，可能显示内容是乱码。
-    pacman -S okular phonon-qt5-vlc poppler-data
-
     yay -S create_ap
 
     yay -S xnviewmp             # ACDSee like picture viewer
@@ -174,6 +164,11 @@ function init_necessory () {
 
     sudo gpasswd -a zw963 vboxusers
     sudo modprobe vboxdrv
+
+    # following package not need when install from arch ISO, only need iwd dhcpcd was enough.
+    # pacman -S iw wpa_supplicant dialog wireless_tools
+
+    pacman -S tcpdump wol cmake
 }
 
 function init_tools () {

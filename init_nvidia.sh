@@ -9,6 +9,13 @@
 # # 安装 lts (注意和内核一致)
 # pacman -S nvidia-lts nvidia-settings nvidia-utils lib32-nvidia-utils mesa-demos
 
+pacman -R gdm
+pacman -S sddm
+systemctl enable sddm
+pacman -S nvidia nvidia-settings nvidia-utils mesa-demos
+pacman -S lib32-nvidia-utils
+yay -S optimus-manager # 需要使用 sddm 来支持.
+
 # pacman -S bumblebee virtualgl lib32-virtualgl
 
 # gpasswd -a zw963 bumblebee
