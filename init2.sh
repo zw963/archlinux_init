@@ -2,10 +2,6 @@
 
 set -xe
 
-# 运行的前提条件:
-# 1. 网络已经配置好. (不配置好, 没办法使用 curl 从 github 下载这个文件.)
-# 2. 已经分区(cfidsk)并格式化(mkfs.ext4 /dev/sda1), 并且成功的 mount 这个分区到 /mnt (mount /dev/sda1 /mnt)
-
 # 初始化的步骤：
 
 # loadkeys us # 确保设定键盘为 US 布局.
@@ -103,14 +99,20 @@ function init_necessory () {
 
     pacman -S yay # install git too.
 
-    pacman -S rsync wget net-tools man netcat cronie mlocate iwd dhcpcd
+    pacman -S rsync wget net-tools man netcat cronie mlocate iwd dhcpcd ntp ntfs-3g bind exfat-utils
+
+    # following package not need when install from arch ISO, only need iwd dhcpcd was enough.
+    # pacman -S iw wpa_supplicant dialog wireless_tools
+
+    systemctl enable ntpdate
 
     systemctl enable cronie
     systemctl enable iwd
     systemctl enable dhcpcd
 
-    # pacman -S fcitx-im fcitx-sunpinyin fcitx-configtool
-    pacman -S fcitx5-chinese-addons fcitx5-pinyin-zhwiki
+    pacman -S tcpdump wol cmake
+
+    # pacman -S fcitx5-chinese-addons fcitx5-pinyin-zhwiki
 
     # 声卡驱动, this is need for support macrophone.
     # pavucontrol is seem like not necessory.
@@ -123,21 +125,34 @@ function init_necessory () {
     # 将当前用户加入 audio 分组.
     sudo gpasswd -a zw963 audio
 
-    # gnome-extra gnome-shell-extension-appindicator
-    # install google-chrome will install xdg-utils too.
+    # 安装多媒体相关的解码库及 H.264 解码支持
     pacman -S gnome gnome-tweaks dconf-editor gnome-usage chrome-gnome-shell \
            networkmanager network-manager-applet \
-           konsole gparted yay copyq flameshot albert \
-           firefox google-chrome flashplugin \
-           skype telegram-desktop \
-           wps-office ttf-wps-fonts
+           konsole gparted yay copyq flameshot  \
+           firefox google-chrome \
+           vlc ffmpeg gst-libav \
+           fcitx-im fcitx-sunpinyin fcitx-configtool
+
+    systemctl enable NetworkManager
+    systemctl enable gdm # use GDM as display manager
+    systemctl enable bluetooth
+
+    # gnome-extra gnome-shell-extension-appindicator
+    # install google-chrome will install xdg-utils too.
+
+    pacman -S albert \
+           skypeforlinux-stable-bin telegram-desktop \
+           flashplayer-standalone
+
+    yay -S wps-office-cn
+    pacman -S ttf-wps-fonts
 
     # 删除 gnome 自带的浏览器.
     pacman -R epiphany
 
     # poppler-data needed for okular pdf show chinese chars.
     # 否则，可能显示内容是乱码。
-    pacman -S okular poppler-data
+    pacman -S okular phonon-qt5-vlc poppler-data
 
     yay -S create_ap
 
@@ -145,11 +160,7 @@ function init_necessory () {
 
     pacman -S samba
     yay -S wsdd2                # Support Win 10 to see current samba driver.
-systemctl restart smb nmb    systemctl enable smb nmb wsdd2
-
-    systemctl enable NetworkManager
-    systemctl enable gdm # use GDM as display manager
-    systemctl enable bluetooth
+    systemctl restart smb nmb    systemctl enable smb nmb wsdd2
 
     # ttf-dejavu + xorg-mkfontscale is need for emacs support active fcitx.
     # jansson for better json performance for emacs 27.1
@@ -157,21 +168,19 @@ systemctl restart smb nmb    systemctl enable smb nmb wsdd2
     # paps for emacs to use lpr(new_lpr) print chinese character.
     pacman -S emacs ttf-dejavu xorg-mkfontscale jansson hunspell hunspell-en_US paps
 
-    pacman -S virtualbox virtualbox-guest-iso virtualbox-host-modules-arch
-    yay -S virtualbox-ext-oracle
+    pacman -S virtualbox virtualbox-guest-iso virtualbox-host-modules-arch virtualbox-ext-oracle
+
     sudo gpasswd -a zw963 vboxusers
     sudo modprobe vboxdrv
 }
 
 function init_tools () {
     # pdf-printer need setup from http://127.0.0.1:631/admin
-    pacman -S cups cups-pdf
-
-    systemctl enable cups
-
     # python-pyqt5 is need for hp-systray
     # 安装后, 运行 hp-setup -i 192.168.51.145, 来初始化打印机
-    pacman -S hplip python-pyqt5
+    pacman -S cups cups-pdf hplip
+
+    systemctl enable cups
 
     # 百度网盘, 网易云音乐.
     pacman -S baidunetdisk-bin netease-cloud-music
@@ -182,7 +191,6 @@ function init_tools () {
 
     # 视频编辑
     pacman -S kdenline
-
 
     # This problem will be solved after re-login or reboot.
 
@@ -224,13 +232,6 @@ function init_optinal () {
     yay -S laptop-mode-tools
 
 }
-
-pacman -S ntp ntfs-3g bind tcpdump \
-       iw wpa_supplicant dialog wireless_tools \
-       wol cmake
-
-systemctl enable ntpdate
-
 
 # 分析磁盘 IO 的工具.
 pacman -S sysstat iotop
@@ -278,9 +279,6 @@ pacman -S wine wine_gecko wine-mono
 
 # image tools
 pacman -S gimp imagemagick
-
-# 安装多媒体相关的解码库及 H.264 解码支持
-yay -S ffmpeg vlc gst-libav
 
 yay -S deepin.com.qq.office
 yay -S deepin.com.thunderspeed
