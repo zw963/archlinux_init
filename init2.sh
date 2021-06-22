@@ -99,7 +99,7 @@ function init_necessory () {
 
     pacman -S yay # install git too.
 
-    pacman -S rsync wget net-tools man netcat cronie mlocate iwd dhcpcd ntp ntfs-3g bind exfat-utils
+    pacman -S rsync wget net-tools man netcat cronie mlocate iwd dhcpcd ntp ntfs-3g bind exfat-utils trash-cli
     systemctl enable ntpdate
     systemctl enable cronie
     systemctl enable iwd
@@ -142,8 +142,9 @@ function init_necessory () {
     # gnome-extra gnome-shell-extension-appindicator
     # install google-chrome will install xdg-utils too.
 
+    # Emacs telega 客户端用 telegram-tdlib
     pacman -S albert \
-           skypeforlinux-stable-bin telegram-desktop \
+           skypeforlinux-stable-bin telegram-desktop telegram-tdlib \
            flashplayer-standalone
 
     yay -S wps-office-cn
