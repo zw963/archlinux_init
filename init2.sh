@@ -13,10 +13,10 @@ timedatectl set-ntp true
 
 # 如需分区，使用 fdisk
 # - fdisk -l 检查所有分区
-# - fdisk /dev/the_disk_to_be_partitioned, 操作该分区
+# - cfdisk /dev/the_disk_to_be_partitioned, 操作该分区
 # - mkfs.ext4 /dev/root_partition 格式化该分区。
+# - e2label /dev/root_partition ArchLinux, 为这个分区标记 label.
 # - mount /dev/root_partition /mnt 加载该分区
-# - 如果你的 boot 启动参数依赖于 label, 需要通过
 
 # Windows 认为硬件时间是当地时间，而 Linux 认为硬件时间是 UTC+0 标准时间，这就很尴尬了。
 # 通过  timedatectl set-local-rtc true  让 Linux 认为硬件时间是当地时间。
@@ -53,6 +53,8 @@ genfstab -U /mnt >> /mnt/etc/fstab
 arch-chroot /mnt /bin/bash
 
 useradd -m zw963
+# set password for zw963 and root with:
+# passwd zw963
 echo 'zw963 ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 # remember change password of zw963 and root.
 
@@ -67,7 +69,8 @@ function add_config () {
 # 开启需要的 locale
 add_config 'en_US.UTF-8 UTF-8' /etc/locale.gen
 add_config 'zh_CN.UTF-8 UTF-8' /etc/locale.gen
-add_config 'zh_TW.UTF-8 UTF-8' /etc/locale.gen
+# add_config 'zh_HK.UTF-8 UTF-8' /etc/locale.gen
+# add_config 'zh_TW.UTF-8 UTF-8' /etc/locale.gen
 # 生成 locale 信息.
 locale-gen
 
@@ -120,7 +123,7 @@ function init_necessory () {
     systemctl enable bluetooth
 
     pacman -S fcitx-im fcitx-sunpinyin fcitx-configtool
-    pacman -S fcitx5-chinese-addons fcitx5-pinyin-zhwiki
+    pacman -S fcitx5-chinese-addons fcitx5-gtk fcitx5-pinyin-zhwiki fcitx5-config-qt
 
     # ttf-dejavu + xorg-mkfontscale is need for emacs support active fcitx.
     # jansson for better json performance for emacs 27.1
@@ -162,7 +165,6 @@ function init_necessory () {
     systemctl restart smb nmb    systemctl enable smb nmb wsdd2
 
     pacman -S virtualbox virtualbox-guest-iso virtualbox-host-modules-arch virtualbox-ext-oracle
-
     sudo gpasswd -a zw963 vboxusers
     sudo modprobe vboxdrv
 
