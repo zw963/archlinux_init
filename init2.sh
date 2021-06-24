@@ -280,9 +280,9 @@ pacman -S wine wine_gecko wine-mono
 # image tools
 pacman -S gimp imagemagick
 
-yay -S deepin.com.qq.office
+pacman -S linuxqq # 官方开发的 QQ
+# yay -S deepin.com.qq.office
 yay -S deepin.com.thunderspeed
-
 
 # following package need be install manually after reboot.
 pacman -S lutris lib32-vulkan-intel vulkan-intel lib32-vulkan-intel vulkan-icd-loader lib32-vulkan-icd-loader
