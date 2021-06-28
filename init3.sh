@@ -25,11 +25,11 @@ echo '127.0.0.1 localhost' >> /etc/hosts
 echo '127.0.0.1 zbook' >> /etc/hosts
 
 function pacman () {
-    pacman --noconfirm "$@"
+    command pacman --noconfirm "$@"
 }
 
 function yay () {
-    yay --noconfirm "$@";
+    command yay --noconfirm "$@";
 }
 
 sed -i '1iServer = Server = https://mirrors.bfsu.edu.cn/archlinux/$repo/os/$arch' /etc/pacman.d/mirrorlist
