@@ -32,7 +32,7 @@ function yay () {
     command yay --noconfirm "$@";
 }
 
-sed -i '1iServer = Server = https://mirrors.bfsu.edu.cn/archlinux/$repo/os/$arch' /etc/pacman.d/mirrorlist
+sed -i '1iServer = https://mirrors.bfsu.edu.cn/archlinux/$repo/os/$arch' /etc/pacman.d/mirrorlist
 cat <<'HEREDOC' >> /etc/pacman.conf
 [archlinuxcn]
 # SigLevel = Optional TrustAll
