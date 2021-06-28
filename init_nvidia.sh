@@ -16,6 +16,11 @@ pacman -S nvidia nvidia-settings nvidia-utils mesa-demos
 pacman -S lib32-nvidia-utils
 yay -S optimus-manager # 需要使用 sddm 来支持.
 
+# 切换:
+# optimus-manager --switch nvidia to switch to the Nvidia GPU
+# optimus-manager --switch integrated to switch to the integrated GPU and power the Nvidia GPU off
+# optimus-manager --switch hybrid to switch to the iGPU but leave the Nvidia GPU available for on-demand offloading, similar to how Optimus works on Windows. See the Wiki for more details.
+
 # pacman -S bumblebee virtualgl lib32-virtualgl
 
 # gpasswd -a zw963 bumblebee
