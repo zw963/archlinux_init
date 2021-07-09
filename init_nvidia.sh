@@ -9,6 +9,9 @@
 # # 安装 lts (注意和内核一致)
 # pacman -S nvidia-lts nvidia-settings nvidia-utils lib32-nvidia-utils mesa-demos
 
+# pacman -S nvidia-beta-dkms
+# cat /proc/driver/nvidia/gpus/0000:01:00.0/power
+
 pacman -R gdm
 pacman -S sddm
 systemctl enable sddm

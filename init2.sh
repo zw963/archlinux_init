@@ -27,111 +27,49 @@ timedatectl set-ntp true
 # 设定上海交大源为首选源, 速度更快
 # sed -i '1iServer = http://ftp.sjtu.edu.cn/archlinux/$repo/os/$arch' /etc/pacman.d/mirrorlist
 # 如果是北方网通, 清华源更快
-sed -i '1iServer = Server = https://mirrors.bfsu.edu.cn/archlinux/$repo/os/$arch' /etc/pacman.d/mirrorlist
+sed -i '1iServer = https://mirrors.bfsu.edu.cn/archlinux/$repo/os/$arch' /etc/pacman.d/mirrorlist
 
 # wol 是 wake on line 工具
-pacstrap /mnt base base-devel linux linux-headers linux-firmware nano
-
-# 添加交大的 AUR 源
-cat <<'HEREDOC' >> /mnt/etc/pacman.conf
-[archlinuxcn]
-# SigLevel = Optional TrustAll
-Server = https://mirrors.bfsu.edu.cn/archlinuxcn/$arch
-HEREDOC
+pacstrap /mnt linux linux-headers linux-firmware base base-devel nano curl
 
 # 升级时, 忽略内核和所有 nvidia 包.
 # sed -i 's/#IgnorePkg.*=/IgnorePkg = linux linux-headers linux-lts linux-lts-headers nvidia nvidia-lts nvidia-settings nvidia-utils virtualbox virtualbox-guest-iso virtualbox-guest-iso/' /mnt/etc/pacman.conf
-sed -i 's#\#\[multilib\]#[multilib]\nInclude = /etc/pacman.d/mirrorlist#' /mnt/etc/pacman.conf
 
 # 生成 root 分区的 fstab 信息
-# genfstab -U /mnt >> /mnt/etc/fstab
-genfstab -U /home >> /mnt/etc/fstab
-sed -i 's#/#/home#' /mnt/etc/fstab
 genfstab -U /mnt >> /mnt/etc/fstab
+# genfstab -U /home >> /mnt/etc/fstab
+# sed -i 's#/#/home#' /mnt/etc/fstab
 
 # 切换到目标 root
 arch-chroot /mnt /bin/bash
 
-useradd -m zw963
-# set password for zw963 and root with:
-# passwd zw963
-echo 'zw963 ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
-# remember change password of zw963 and root.
-
-# 设定上海为当前时区, 并保存时间到主机, hwclock 会生成: /etc/adjtime
-ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && hwclock --systohc --localtime
-
-function add_config () {
-    pattern="$1"
-    cat "$2" |grep "^${pattern}" || echo "$pattern" >> "$2"
-}
-
-# 开启需要的 locale
-add_config 'en_US.UTF-8 UTF-8' /etc/locale.gen
-add_config 'zh_CN.UTF-8 UTF-8' /etc/locale.gen
-# add_config 'zh_HK.UTF-8 UTF-8' /etc/locale.gen
-# add_config 'zh_TW.UTF-8 UTF-8' /etc/locale.gen
-# 生成 locale 信息.
-locale-gen
-
-# 设定 LANG 环境变量 (FIXME: 这个不执行， 看看效果)
-echo 'LANG=en_US.UTF-8' > /etc/locale.conf
-
-# 设定 hostname
-echo 'lg_gram' > /etc/hostname
-
-echo '127.0.0.1 localhost' >> /etc/hosts
-echo '127.0.0.1 lg_gram' >> /etc/hosts
-
-function pacman () {
-    pacman --noconfirm "$@"
-}
-
-function yay () {
-    yay --noconfirm "$@";
-}
-
 function init_necessory () {
-    pacman -Sy
-    pacman -Fy
-
     # pacman -S pacman-contrib
-
-    # must update this first, othersize, may install failed due required key missing from keyring.
-    pacman -S archlinuxcn-keyring
 
     pacman -S yay # install git too.
 
-    pacman -S rsync wget net-tools man netcat cronie mlocate iwd dhcpcd ntp ntfs-3g bind exfat-utils trash-cli
-    systemctl enable ntpdate
-    systemctl enable cronie
-    systemctl enable iwd
-    systemctl enable dhcpcd
+    # paps for emacs to use lpr(new_lpr) print chinese character.
+    yay -S paps
+    yay -S flashplayer-standalone
 
-    pacman -S alsa-utils
-    # 将当前用户加入 audio 分组.
-    sudo gpasswd -a zw963 audio
+    yay -S wps-office-cn
+    pacman -S ttf-wps-fonts
 
-    # pavucontrol is seem like not necessory.
+    yay -S create_ap
+
+    yay -S xnviewmp             # ACDSee like picture viewer
+
+    pacman -S samba
+    systemctl enable smb nmb wsdd2
+
+    yay -S wsdd2                # Support Win 10 to see current samba driver.
+    systemctl restart smb nmb
 
     # 如果你希望OSS应用和dmix一起工作，也安装alsa-oss。然后载入snd-seq-oss， snd-pcm-oss 和 snd-mixer-oss 核心模块 来激活OSS模仿。
     # modprobe snd-seq-oss snd-pcm-oss snd-mixer-oss
 
-    pacman -S gnome gnome-tweaks dconf-editor networkmanager network-manager-applet konsole firefox google-chrome gparted copyq flameshot
-    systemctl enable NetworkManager
-    systemctl enable gdm # use GDM as display manager
-    systemctl enable bluetooth
-
-    pacman -S fcitx-im fcitx-sunpinyin fcitx-configtool
-    pacman -S fcitx5-chinese-addons fcitx5-gtk fcitx5-pinyin-zhwiki fcitx5-config-qt
-
-    # ttf-dejavu + xorg-mkfontscale is need for emacs support active fcitx.
-    # jansson for better json performance for emacs 27.1
-    pacman -S emacs ttf-dejavu xorg-mkfontscale jansson
     # hunspell for ispell
     pacman -S hunspell hunspell-en_US
-    # paps for emacs to use lpr(new_lpr) print chinese character.
-    yay -S paps
 
     # 安装多媒体相关的解码库及 H.264 解码支持
     pacman -S vlc ffmpeg gst-libav
@@ -145,33 +83,18 @@ function init_necessory () {
     # gnome-extra gnome-shell-extension-appindicator
     # install google-chrome will install xdg-utils too.
 
-    # Emacs telega 客户端用 telegram-tdlib
-    pacman -S albert \
-           skypeforlinux-stable-bin telegram-desktop telegram-tdlib \
-           flashplayer-standalone
-
-    yay -S wps-office-cn
-    pacman -S ttf-wps-fonts
+    # pacman -S skypeforlinux-stable-bin
+    # pacman -S albert
 
     # 删除 gnome 自带的浏览器.
     pacman -R epiphany
-
-    yay -S create_ap
-
-    yay -S xnviewmp             # ACDSee like picture viewer
-
-    pacman -S samba
-    yay -S wsdd2                # Support Win 10 to see current samba driver.
-    systemctl restart smb nmb    systemctl enable smb nmb wsdd2
-
-    pacman -S virtualbox virtualbox-guest-iso virtualbox-host-modules-arch virtualbox-ext-oracle
-    sudo gpasswd -a zw963 vboxusers
-    sudo modprobe vboxdrv
 
     # following package not need when install from arch ISO, only need iwd dhcpcd was enough.
     # pacman -S iw wpa_supplicant dialog wireless_tools
 
     pacman -S tcpdump wol cmake
+
+    pacman -S man-pages inetutils
 }
 
 function init_tools () {
