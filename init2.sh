@@ -44,7 +44,7 @@ genfstab -U /mnt >> /mnt/etc/fstab
 arch-chroot /mnt /bin/bash
 
 function init_necessory () {
-    # pacman -S pacman-contrib
+    pacman -S pacman-contrib
 
     pacman -S yay # install git too.
 
@@ -78,7 +78,7 @@ function init_necessory () {
     # 否则，可能显示内容是乱码。
     pacman -S okular phonon-qt5-vlc poppler-data
 
-    pacman -S gnome-usage chrome-gnome-shell
+    pacman -S gnome-usage chrome-gnome-shell gnome-tweaks gnome-nettool
 
     # gnome-extra gnome-shell-extension-appindicator
     # install google-chrome will install xdg-utils too.
