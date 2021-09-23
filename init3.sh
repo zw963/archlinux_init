@@ -48,13 +48,16 @@ pacman -Fy
 # must update this first, othersize, may install failed due required key missing from keyring.
 pacman -S archlinuxcn-keyring
 
-# # 如果没有安装 X, 为了重启后可以连接 wifi, 需要安装 iwd, 同时需要开启 systemd-networkd(作为 dhcpcd 的替代)
-# # 但是如果安装了 gnome, 安装了 network-manager, 则不需要下面的这些服务
+# 如果没有安装 X, 为了重启后可以连接 wifi, 需要安装 iwd, dhcpcd.
+# 但是如果安装了 gnome, 安装了 network-manager(替代iwd), 则只需要 systemd-networkd(替代 dhcpcd) 就够了。
 # pacman -S iwd
 # systemctl enable iwd
-# systemctl enable systemd-networkd
 
-pacman -S rsync wget net-tools man netcat cronie mlocate ntp ntfs-3g bind exfat-utils bash-completion
+# 似乎 ntp 也不需要了。
+pacman -S systemd
+systemctl enable systemd-networkd systemd-timesyncd.service
+
+pacman -S rsync wget net-tools man netcat cronie mlocate ntfs-3g bind exfat-utils bash-completion
 systemctl enable ntpdate
 systemctl enable cronie
 
