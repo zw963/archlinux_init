@@ -106,7 +106,8 @@ function init_tools () {
     systemctl enable cups
 
     # 百度网盘, 网易云音乐.
-    pacman -S baidunetdisk-bin netease-cloud-music
+    yay -S baidunetdisk-electron
+    pacman -S netease-cloud-music
 
     # 如果安装 plasma, deepin-wine 移植的一些 package 无法工作.
     # pacman install xsettingsd, 然后在 ~/.config/autostart/../
