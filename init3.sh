@@ -75,7 +75,8 @@ pacman -S fcitx5-chinese-addons fcitx5-gtk fcitx5-pinyin-zhwiki fcitx5-config-qt
 
 # ttf-dejavu + xorg-mkfontscale is need for emacs support active fcitx.
 # jansson for better json performance for emacs 27.1
-pacman -S emacs ttf-dejavu xorg-mkfontscale jansson
+# libgccjit for support native compilation.
+pacman -S emacs ttf-dejavu xorg-mkfontscale jansson libgccjit ttf-hanazono libotf m17n-lib
 
 pacman -S virtualbox virtualbox-guest-iso virtualbox-host-modules-arch virtualbox-ext-oracle
 sudo gpasswd -a zw963 vboxusers
@@ -84,6 +85,9 @@ sudo gpasswd -a zw963 vboxusers
 # Emacs telega 客户端用 telegram-tdlib
 pacman -S telegram-desktop telegram-tdlib
 
-pacman -S plasma kde-applications
+# https://extensions.gnome.org/extension/120/system-monitor/
+pacman -S gnome-usage chrome-gnome-shell gnome-shell-extension-appindicator
+
+# pacman -S plasma kde-applications
 
 echo '[0m[33mremember change password of zw963 and root.[0m'

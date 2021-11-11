@@ -80,7 +80,7 @@ function init_necessory () {
 
     pacman -S gnome-usage chrome-gnome-shell gnome-tweaks gnome-nettool
 
-    # gnome-extra gnome-shell-extension-appindicator
+    # gnome-extra
     # install google-chrome will install xdg-utils too.
 
     # pacman -S skypeforlinux-stable-bin
