@@ -85,6 +85,9 @@ sudo gpasswd -a zw963 vboxusers
 # Emacs telega 客户端用 telegram-tdlib
 pacman -S telegram-desktop telegram-tdlib
 
+# 好几个软件，例如，mu 依赖这个。
+pacman -S xapian-core
+
 # https://extensions.gnome.org/extension/120/system-monitor/
 pacman -S gnome-usage chrome-gnome-shell gnome-shell-extension-appindicator
 
