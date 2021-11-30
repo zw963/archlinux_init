@@ -88,6 +88,8 @@ pacman -S telegram-desktop telegram-tdlib
 # 好几个软件，例如，mu 依赖这个。
 pacman -S xapian-core
 
+pacman -S gimp gimp-help-zh_cn
+
 # https://extensions.gnome.org/extension/120/system-monitor/
 pacman -S gnome-usage chrome-gnome-shell gnome-shell-extension-appindicator
 
