@@ -93,6 +93,10 @@ pacman -S gimp gimp-help-zh_cn
 # https://extensions.gnome.org/extension/120/system-monitor/
 pacman -S gnome-usage chrome-gnome-shell gnome-shell-extension-appindicator
 
+# ruby 2d
+sudo pacman -S sdl2 sdl2_image sdl2_mixer sdl2_ttf
+sudo pacman -S glew glm freetype2
+
 # pacman -S plasma kde-applications
 
 echo '[0m[33mremember change password of zw963 and root.[0m'

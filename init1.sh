@@ -47,7 +47,6 @@ ins albert
 # 安装 patched 版本的 wicd, 这个版本修复了 wicd-curses 总是崩溃的问题。
 yao wicd-patched
 
-
 echo 'Run before boot:'
 
 echo 'arch-chroot /mnt /bin/bash'

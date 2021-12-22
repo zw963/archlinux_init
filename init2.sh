@@ -4,44 +4,12 @@ set -xe
 
 # 初始化的步骤：
 
-# loadkeys us # 确保设定键盘为 US 布局.
-# ip link # 确保可以正确显示当前的网卡，否则可能续需要 ip link set dev wls1 up 来启动这个 interface
-# 启动 iwctl, 然后根据补全，键入下面的命令： station TABwlan0 connect TABwifi
-
-# 确保系统时间是准确的, 一定确保同步, 否则会造成签名错误.
-timedatectl set-ntp true
-
-# 如需分区，使用 fdisk
-# - fdisk -l 检查所有分区
-# - cfdisk /dev/the_disk_to_be_partitioned, 操作该分区
-# - mkfs.ext4 /dev/root_partition 格式化该分区。
-# - e2label /dev/root_partition ArchLinux, 为这个分区标记 label.
-# - mount /dev/root_partition /mnt 加载该分区
-
-# Windows 认为硬件时间是当地时间，而 Linux 认为硬件时间是 UTC+0 标准时间，这就很尴尬了。
-# 通过  timedatectl set-local-rtc true  让 Linux 认为硬件时间是当地时间。
-
-# 是否需要运行下面的命令, 来使用本地时钟?
-# timedatectl set-local-rtc true
-
-# 设定上海交大源为首选源, 速度更快
-# sed -i '1iServer = http://ftp.sjtu.edu.cn/archlinux/$repo/os/$arch' /etc/pacman.d/mirrorlist
-# 如果是北方网通, 清华源更快
-sed -i '1iServer = https://mirrors.bfsu.edu.cn/archlinux/$repo/os/$arch' /etc/pacman.d/mirrorlist
-
-# wol 是 wake on line 工具
-pacstrap /mnt linux linux-headers linux-firmware base base-devel nano curl
-
 # 升级时, 忽略内核和所有 nvidia 包.
 # sed -i 's/#IgnorePkg.*=/IgnorePkg = linux linux-headers linux-lts linux-lts-headers nvidia nvidia-lts nvidia-settings nvidia-utils virtualbox virtualbox-guest-iso virtualbox-guest-iso/' /mnt/etc/pacman.conf
 
 # 生成 root 分区的 fstab 信息
-genfstab -U /mnt >> /mnt/etc/fstab
 # genfstab -U /home >> /mnt/etc/fstab
 # sed -i 's#/#/home#' /mnt/etc/fstab
-
-# 切换到目标 root
-arch-chroot /mnt /bin/bash
 
 function init_necessory () {
     pacman -S pacman-contrib
@@ -155,23 +123,23 @@ function init_optinal () {
     # 临时关闭： sudo laptop_mode stop
     yay -S laptop-mode-tools
 
-}
+    # 分析磁盘 IO 的工具.
+    # pacman -S sysstat iotop
 
-# 分析磁盘 IO 的工具.
-pacman -S sysstat iotop
+    # mtr工具的主要作用是在于两点丢包时候的异常点排查及路径搜集，是ping和tracert的结合。
+    # 相比于ping它会有路由节点的展示，而相对于tracert它会展示中间路由节点的丢包情况，
+    # 可以根据丢包梯度情况简单分析出可能的异常节点并向对应运营商进行反馈。
+    # 由于骨干外网路径可能存在的异步路由（即数据包来回路径不一致，可能在某一方向看无明显异常点，
+    # 另一方向才会显示异常）与ECMP（运营商在多根路径上做负载均衡，某一根异常导致部分IP丢包），
+    # 建议提供双向 mtr。
+    pacman -S traceroute mtr
+
+}
 
 # printer
 # settings printer with:
 # hp-setup -i 192.168.50.145 (192.168.50.145 is printer IP)
 # another way is to use CUPS, http://127.0.0.1:631
-
-# mtr工具的主要作用是在于两点丢包时候的异常点排查及路径搜集，是ping和tracert的结合。
-# 相比于ping它会有路由节点的展示，而相对于tracert它会展示中间路由节点的丢包情况，
-# 可以根据丢包梯度情况简单分析出可能的异常节点并向对应运营商进行反馈。
-# 由于骨干外网路径可能存在的异步路由（即数据包来回路径不一致，可能在某一方向看无明显异常点，
-# 另一方向才会显示异常）与ECMP（运营商在多根路径上做负载均衡，某一根异常导致部分IP丢包），
-# 建议提供双向 mtr。
-pacman -S traceroute mtr
 
 # xorg-fonts is need for emacs active IM.(已验证,非必须)
 # mesa-demos add glxgears command to detect display card.
@@ -214,14 +182,14 @@ pacman -S lutris lib32-vulkan-intel vulkan-intel lib32-vulkan-intel vulkan-icd-l
 # # nvidia tools
 # pacman -S nvidia nvidia-settings nvidia-utils lib32-nvidia-utils
 
-yay -S vmware-workstation
+pacman -S vmware-workstation && modprobe -a vmw_vmci vmmon
 
 # VMWARE 网络访问
 systemctl enable vmware-networks.service
 # VMWARE USB 共享
 systemctl enable vmware-usbarbitrator.service
 # VMWARE 目录共享
-systemctl enable vmware-hostd.service
+# systemctl enable vmware-hostd.service
 # 创建一些必须的空目录, (安装 vmware 客户端工具必须)
 for x in {0..6}; do mkdir -p /etc/init.d/rc${x}.d; done
 
